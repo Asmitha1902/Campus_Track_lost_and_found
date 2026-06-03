@@ -136,13 +136,6 @@ const CampusAuth = () => {
 
     showMessage("success", data.message);
 
-    // ⭐ save user
-   localStorage.setItem("user", JSON.stringify({
-  id: data.id,
-  fullName: data.fullName,
-  email: data.email
-}));
-
     window.location.href = "/dashboard";
 
   } catch {

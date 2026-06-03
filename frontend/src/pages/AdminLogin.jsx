@@ -37,8 +37,6 @@ const handleLogin = async (e) => {
     }
 
     if (response.status === 200 && result.status === "SUCCESS") {
-      localStorage.setItem("admin", JSON.stringify(result.admin));
-
       alert("Login Successful");
       navigate("/admin-dashboard");
 

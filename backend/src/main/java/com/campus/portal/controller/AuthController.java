@@ -6,23 +6,27 @@ import org.springframework.http.ResponseEntity;
 
 import com.campus.portal.service.AuthService;
 import com.campus.portal.dto.*;
+import com.campus.portal.security.JwtUtil;
+import com.campus.portal.repository.UserRepository;
+import com.campus.portal.entity.User;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
-
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 
 import java.util.Collections;
 
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true") // ✅ FIX PORT
+@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true") // Fixed port to match frontend
 public class AuthController {
 
     private final AuthService authService;
+    private final JwtUtil jwtUtil;
+    private final UserRepository userRepository;
 
     // ================= REGISTER =================
     @PostMapping("/register")
@@ -40,9 +44,8 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(
             @RequestBody LoginRequest request,
-            HttpServletRequest httpRequest
+            HttpServletResponse httpResponse
     ) {
-
         ResponseEntity<?> response = authService.login(request);
 
         if (!response.getStatusCode().is2xxSuccessful()) {
@@ -53,36 +56,55 @@ public class AuthController {
 
         if (body instanceof UserDTO userDTO) {
 
-            UsernamePasswordAuthenticationToken auth =
-                    new UsernamePasswordAuthenticationToken(
-                            userDTO.getEmail(),
-                            null,
-                            Collections.singletonList(
-                                    new SimpleGrantedAuthority(userDTO.getRole())
-                            )
-                    );
+            // Generate JWT Token
+            String token = jwtUtil.generateToken(userDTO.getEmail());
 
-            SecurityContextHolder.getContext().setAuthentication(auth);
-
-            HttpSession session = httpRequest.getSession(true);
-
-            session.setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
-            session.setAttribute("userId", userDTO.getId());          // ✅ IMPORTANT
-            session.setAttribute("userName", userDTO.getFullName());  // ✅ ADD
-
-            System.out.println("SESSION CREATED: " + session.getId());
+            // Set HttpOnly Cookie
+            Cookie cookie = new Cookie("jwt_token", token);
+            cookie.setHttpOnly(true);
+            cookie.setSecure(false); // Set to true if using HTTPS
+            cookie.setPath("/");
+            cookie.setMaxAge(24 * 60 * 60); // 1 day
+            httpResponse.addCookie(cookie);
 
             return ResponseEntity.ok().body(
                 new java.util.HashMap<String, Object>() {{
-                    put("id", userDTO.getId());
-                    put("fullName", userDTO.getFullName());
-                    put("email", userDTO.getEmail());
                     put("message", "Login successful");
                 }}
             );
         }
 
         return ResponseEntity.status(500).body("Unexpected error");
+    }
+
+    // ================= ME =================
+    @GetMapping("/me")
+    public ResponseEntity<?> getCurrentUser() {
+        if (SecurityContextHolder.getContext().getAuthentication() == null) {
+            return ResponseEntity.status(401).body("Not authenticated");
+        }
+        
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByEmail(email).orElse(null);
+        
+        if (user == null) {
+            return ResponseEntity.status(404).body("User not found");
+        }
+        
+        UserDTO userDTO = new UserDTO(user);
+        return ResponseEntity.ok(userDTO);
+    }
+    
+    // ================= LOGOUT =================
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpServletResponse httpResponse) {
+        Cookie cookie = new Cookie("jwt_token", null);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(false);
+        cookie.setPath("/");
+        cookie.setMaxAge(0);
+        httpResponse.addCookie(cookie);
+        return ResponseEntity.ok("Logout successful");
     }
 
     // ================= FORGOT PASSWORD =================

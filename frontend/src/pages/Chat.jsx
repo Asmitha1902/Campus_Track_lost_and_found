@@ -12,20 +12,27 @@ const Chat = () => {
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
-    const stored = localStorage.getItem("user");
-    if (!stored) {
-      navigate("/login");
-      return;
-    }
-    const userObj = JSON.parse(stored);
-    setUser(userObj);
-    
-    fetchRequests(userObj.id);
-    const reqInterval = setInterval(() => {
-      fetchRequests(userObj.id);
-    }, 5000);
+    let reqInterval;
+    fetch("http://localhost:9090/api/auth/me", { credentials: "include" })
+      .then(res => {
+        if (!res.ok) {
+          navigate("/login");
+          throw new Error("Not authenticated");
+        }
+        return res.json();
+      })
+      .then(userObj => {
+        setUser(userObj);
+        fetchRequests(userObj.id);
+        reqInterval = setInterval(() => {
+          fetchRequests(userObj.id);
+        }, 5000);
+      })
+      .catch(err => console.error(err));
 
-    return () => clearInterval(reqInterval);
+    return () => {
+      if (reqInterval) clearInterval(reqInterval);
+    };
   }, [navigate]);
 
   const fetchRequests = async (userId) => {

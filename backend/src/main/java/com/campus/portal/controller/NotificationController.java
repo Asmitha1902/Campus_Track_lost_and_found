@@ -29,10 +29,7 @@ public class NotificationController {
     @GetMapping("/my")
     public ResponseEntity<?> getMyNotifications(HttpServletRequest request) {
 
-        HttpSession session = request.getSession(false);
-        if (session == null) return ResponseEntity.status(401).body("Session expired");
-
-        Long userId = (Long) session.getAttribute("userId");
+        Long userId = (Long) request.getAttribute("userId");
         if (userId == null) return ResponseEntity.status(401).body("Not logged in");
 
         List<Notification> notifications =

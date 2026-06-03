@@ -23,9 +23,7 @@ public class ChatController {
     }
 
     private Long getUserIdFromSession(HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-        if (session == null) return null;
-        return (Long) session.getAttribute("userId");
+        return (Long) request.getAttribute("userId");
     }
 
     @PostMapping("/request")

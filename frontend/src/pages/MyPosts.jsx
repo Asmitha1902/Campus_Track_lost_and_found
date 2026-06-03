@@ -39,6 +39,25 @@ const MyPosts = () => {
     setPosts(prev => prev.filter(p => p.id !== id));
   };
 
+  // 🔥 CLAIM ITEM (RESOLVE MATCH)
+  const claimItem = async (id) => {
+    try {
+      const res = await fetch(`http://localhost:9090/api/items/resolve/${id}`, {
+        method: "PUT",
+        credentials: "include"
+      });
+      if (res.ok) {
+        setPosts(prev => prev.map(p => p.id === id ? { ...p, itemStatus: "RESOLVED" } : p));
+        alert("Item successfully claimed and marked as resolved!");
+      } else {
+        alert("Failed to claim item.");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error claiming item.");
+    }
+  };
+
   return (
     <div className="myposts-container1">
 
@@ -130,13 +149,23 @@ const MyPosts = () => {
             {/* ACTION */}
             <div className="actions">
               {post.itemStatus?.toLowerCase() === "matched" && (
-                <button 
-                  className="chat-btn"
-                  onClick={() => navigate("/chat")}
-                  style={{background: '#4f46e5', color: '#fff', border: 'none', padding: '5px 15px', borderRadius: '5px', cursor: 'pointer', fontSize: '14px', marginRight: '10px'}}
-                >
-                  Chat
-                </button>
+                <>
+                  <button 
+                    className="chat-btn"
+                    onClick={() => navigate("/chat")}
+                    style={{background: '#4f46e5', color: '#fff', border: 'none', padding: '5px 15px', borderRadius: '5px', cursor: 'pointer', fontSize: '14px', marginRight: '10px'}}
+                  >
+                    Chat
+                  </button>
+                  {post.type?.toLowerCase() === "lost" && (
+                    <button 
+                      onClick={() => claimItem(post.id)}
+                      style={{background: '#10b981', color: '#fff', border: 'none', padding: '5px 15px', borderRadius: '5px', cursor: 'pointer', fontSize: '14px', marginRight: '10px'}}
+                    >
+                      Claim Item
+                    </button>
+                  )}
+                </>
               )}
               <button 
                 className="delete-btn"

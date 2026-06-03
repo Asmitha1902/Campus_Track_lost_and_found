@@ -3,11 +3,13 @@ package com.campus.portal.controller;
 import com.campus.portal.dto.UserDTO;
 import com.campus.portal.entity.User;
 import com.campus.portal.repository.UserRepository;
-import com.campus.portal.repository.ItemRepository; // ✅ NEW
+import com.campus.portal.repository.ItemRepository;
 import com.campus.portal.service.AdminService;
+import com.campus.portal.security.JwtUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Cookie;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,22 +24,36 @@ public class AdminController {
 
     private final AdminService adminService;
     private final UserRepository userRepository;
-    private final ItemRepository itemRepository; // ✅ NEW
+    private final ItemRepository itemRepository;
+    private final JwtUtil jwtUtil;
 
     public AdminController(AdminService adminService,
                            UserRepository userRepository,
-                           ItemRepository itemRepository) { // ✅ NEW
-
+                           ItemRepository itemRepository,
+                           JwtUtil jwtUtil) {
         this.adminService = adminService;
         this.userRepository = userRepository;
         this.itemRepository = itemRepository;
+        this.jwtUtil = jwtUtil;
     }
 
     // =========================================
-    // 🔐 CHECK ADMIN SESSION
+    // 🔐 CHECK ADMIN JWT
     // =========================================
-    private boolean isAdminLoggedIn(HttpSession session) {
-        return session != null && session.getAttribute("admin") != null;
+    private boolean isAdminLoggedIn(HttpServletRequest request) {
+        if (request.getCookies() != null) {
+            for (Cookie cookie : request.getCookies()) {
+                if ("admin_jwt_token".equals(cookie.getName())) {
+                    try {
+                        String email = jwtUtil.extractEmail(cookie.getValue());
+                        return email != null;
+                    } catch (Exception e) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     // =========================================
@@ -45,7 +61,7 @@ public class AdminController {
     // =========================================
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AdminLoginRequest request,
-                                  HttpServletRequest httpRequest) {
+                                   HttpServletResponse response) {
 
         if (request == null || request.getEmail() == null || request.getPassword() == null) {
             return ResponseEntity.badRequest().body(Map.of(
@@ -59,29 +75,69 @@ public class AdminController {
                 request.getPassword().trim()
         );
 
-        if (admin != null) {
-            HttpSession session = httpRequest.getSession(true);
-            session.setAttribute("admin", admin);
+        if ("SUCCESS".equals(admin)) {
+            String token = jwtUtil.generateToken(request.getEmail().trim());
+            Cookie cookie = new Cookie("admin_jwt_token", token);
+            cookie.setHttpOnly(true);
+            cookie.setSecure(false);
+            cookie.setPath("/");
+            cookie.setMaxAge(24 * 60 * 60);
+            response.addCookie(cookie);
 
             return ResponseEntity.ok(Map.of(
                     "status", "SUCCESS",
-                    "admin", admin
+                    "admin", Map.of("email", request.getEmail().trim(), "name", "Admin")
             ));
         }
 
         return ResponseEntity.status(401).body(Map.of(
                 "status", "FAILURE",
                 "message", "Invalid credentials"
-        ));
+            ));
+    }
+
+    // =========================================
+    // 🔐 ADMIN ME
+    // =========================================
+    @GetMapping("/me")
+    public ResponseEntity<?> me(HttpServletRequest request) {
+        if (!isAdminLoggedIn(request)) {
+            return ResponseEntity.status(401).body("Unauthorized");
+        }
+        
+        String email = null;
+        if (request.getCookies() != null) {
+            for (Cookie cookie : request.getCookies()) {
+                if ("admin_jwt_token".equals(cookie.getName())) {
+                    email = jwtUtil.extractEmail(cookie.getValue());
+                    break;
+                }
+            }
+        }
+        
+        return ResponseEntity.ok(Map.of("email", email != null ? email : "admin@campus.com", "name", "Admin"));
+    }
+
+    // =========================================
+    // 🔐 ADMIN LOGOUT
+    // =========================================
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpServletResponse response) {
+        Cookie cookie = new Cookie("admin_jwt_token", null);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(false);
+        cookie.setPath("/");
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+        return ResponseEntity.ok("Logout successful");
     }
 
     // =========================================
     // 👥 GET ALL USERS
     // =========================================
     @GetMapping("/users")
-    public ResponseEntity<?> getAllUsers(HttpSession session) {
-
-        if (!isAdminLoggedIn(session)) {
+    public ResponseEntity<?> getAllUsers(HttpServletRequest request) {
+        if (!isAdminLoggedIn(request)) {
             return ResponseEntity.status(403).body("Unauthorized");
         }
 
@@ -89,11 +145,8 @@ public class AdminController {
                 .stream()
                 .map(user -> {
                     UserDTO dto = new UserDTO(user);
-
-                    // ✅ FIX: REAL POST COUNT FROM DB
                     int count = itemRepository.countByUserId(user.getId());
                     dto.setPostCount(count);
-
                     return dto;
                 })
                 .toList();
@@ -106,9 +159,8 @@ public class AdminController {
     // =========================================
     @GetMapping("/users/search")
     public ResponseEntity<?> searchUsers(@RequestParam String name,
-                                         HttpSession session) {
-
-        if (!isAdminLoggedIn(session)) {
+                                         HttpServletRequest request) {
+        if (!isAdminLoggedIn(request)) {
             return ResponseEntity.status(403).body("Unauthorized");
         }
 
@@ -117,10 +169,8 @@ public class AdminController {
                 .stream()
                 .map(user -> {
                     UserDTO dto = new UserDTO(user);
-
                     int count = itemRepository.countByUserId(user.getId());
                     dto.setPostCount(count);
-
                     return dto;
                 })
                 .toList();
@@ -133,9 +183,8 @@ public class AdminController {
     // =========================================
     @DeleteMapping("/users/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable Long id,
-                                        HttpSession session) {
-
-        if (!isAdminLoggedIn(session)) {
+                                        HttpServletRequest request) {
+        if (!isAdminLoggedIn(request)) {
             return ResponseEntity.status(403).body("Unauthorized");
         }
 
@@ -144,7 +193,6 @@ public class AdminController {
         }
 
         userRepository.deleteById(id);
-
         return ResponseEntity.ok(Map.of("message", "User deleted successfully"));
     }
 
@@ -153,9 +201,8 @@ public class AdminController {
     // =========================================
     @PutMapping("/users/toggle/{id}")
     public ResponseEntity<?> toggleUserStatus(@PathVariable Long id,
-                                              HttpSession session) {
-
-        if (!isAdminLoggedIn(session)) {
+                                              HttpServletRequest request) {
+        if (!isAdminLoggedIn(request)) {
             return ResponseEntity.status(403).body("Unauthorized");
         }
 
@@ -163,7 +210,6 @@ public class AdminController {
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         user.setEmailVerified(!user.isEmailVerified());
-
         User updatedUser = userRepository.save(user);
 
         return ResponseEntity.ok(new UserDTO(updatedUser));

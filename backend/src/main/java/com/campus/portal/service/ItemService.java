@@ -134,7 +134,69 @@ public class ItemService {
 
     // ================= DELETE =================
     public void deleteItem(Long id) {
-        itemRepo.deleteById(id);
+        Item item = itemRepo.findById(id).orElse(null);
+        if (item != null) {
+            if ("MATCHED".equalsIgnoreCase(item.getItemStatus())) {
+                revertMatchedPair(item);
+            }
+            itemRepo.deleteById(id);
+        }
+    }
+
+    private void revertMatchedPair(Item myItem) {
+        List<Item> allItems = itemRepo.findAll();
+        Item bestMatch = null;
+        int bestScore = 0;
+
+        String targetType = myItem.getType() != null && myItem.getType().toLowerCase().contains("lost") ? "found" : "lost";
+
+        for (Item other : allItems) {
+            if (other == null || other.getId().equals(myItem.getId())) continue;
+            
+            if (!"MATCHED".equalsIgnoreCase(other.getItemStatus())) continue;
+            String otherType = other.getType() != null ? other.getType().toLowerCase() : "";
+            if (!otherType.contains(targetType)) continue;
+
+            int nameMatchPercent = 0;
+            if (myItem.getItemName() != null && other.getItemName() != null) {
+                String n1 = myItem.getItemName().toLowerCase().trim();
+                String n2 = other.getItemName().toLowerCase().trim();
+                nameMatchPercent = calculateFuzzyMatchPercentage(n1, n2);
+                if (n1.contains(n2) || n2.contains(n1)) nameMatchPercent = Math.max(nameMatchPercent, 80);
+            }
+
+            int locationMatchPercent = 0;
+            if (myItem.getLocation() != null && other.getLocation() != null) {
+                if (myItem.getLocation().trim().equalsIgnoreCase(other.getLocation().trim())) {
+                    locationMatchPercent = 100;
+                } else {
+                    locationMatchPercent = calculateFuzzyMatchPercentage(
+                            myItem.getLocation().toLowerCase().trim(),
+                            other.getLocation().toLowerCase().trim());
+                }
+            }
+
+            int tagsMatchPercent = 0;
+            if (myItem.getTags() != null && other.getTags() != null) {
+                String[] t1 = myItem.getTags().toLowerCase().split(",");
+                String[] t2 = other.getTags().toLowerCase().split(",");
+                for (String a : t1) {
+                    for (String b : t2) {
+                        if (!a.trim().isEmpty() && !b.trim().isEmpty()) {
+                            int tagMatchPercent = calculateFuzzyMatchPercentage(a.trim(), b.trim());
+                            if (tagMatchPercent > tagsMatchPercent) tagsMatchPercent = tagMatchPercent;
+                        }
+                    }
+                }
+            }
+
+            int score = (int) ((nameMatchPercent * 0.6) + (locationMatchPercent * 0.3) + (tagsMatchPercent * 0.1));
+            
+            if (score >= 40) { // Keep at 40 to ensure we catch all historical matches!
+                other.setItemStatus("ACTIVE");
+                itemRepo.save(other);
+            }
+        }
     }
 
     // ================= COUNT =================
@@ -295,7 +357,7 @@ public class ItemService {
             }
 
             // 🔥 SAVE MATCH + NOTIFICATION
-            if (bestMatch != null && bestScore >= 40) {
+            if (bestMatch != null && bestScore >= 60) { // Changed threshold to 60 to be stricter
 
                 if (!"MATCHED".equalsIgnoreCase(myItem.getItemStatus())) {
                     myItem.setItemStatus("MATCHED");
@@ -357,35 +419,85 @@ public class ItemService {
             }
         }
 
-        // 🔥 OLD MATCHED ITEMS (SHOW TO ALL USERS)
-        for (Item item : allItems) {
-            if (item.getItemStatus() != null &&
-                    item.getItemStatus().equalsIgnoreCase("MATCHED")) {
-
-                String type = item.getType() != null
-                        ? item.getType().toLowerCase()
-                        : "";
-
-                if (!type.contains("found"))
-                    continue;
-                if (shownIds.contains(item.getId()))
-                    continue;
-
-                shownIds.add(item.getId());
-
-                ItemDTO dto = new ItemDTO(item);
-
-                // Optional fallback score
-                dto.setMatchPercent(100);
-
-                matches.add(dto);
-            }
-        }
+        // We removed the block that showed all global MATCHED items to every user.
+        // Potential matches will now strictly only show items that match the logged-in user's items.
 
         // Sort matches by percentage descending
         matches.sort((a, b) -> Integer.compare(b.getMatchPercent(), a.getMatchPercent()));
 
         return matches;
+    }
+
+    // ================= RESOLVE MATCH =================
+    public void resolveMatch(Long itemId) {
+        Item myItem = itemRepo.findById(itemId).orElse(null);
+        if (myItem == null) return;
+
+        // Resolve this item
+        myItem.setItemStatus("RESOLVED");
+        itemRepo.save(myItem);
+
+        // Try to find and resolve the corresponding matched item
+        List<Item> allItems = itemRepo.findAll();
+        Item bestMatch = null;
+        int bestScore = 0;
+
+        String targetType = myItem.getType() != null && myItem.getType().toLowerCase().contains("lost") ? "found" : "lost";
+
+        for (Item other : allItems) {
+            if (other == null || other.getId().equals(myItem.getId())) continue;
+            
+            // Only look at items that are MATCHED and of the opposite type
+            if (!"MATCHED".equalsIgnoreCase(other.getItemStatus())) continue;
+            String otherType = other.getType() != null ? other.getType().toLowerCase() : "";
+            if (!otherType.contains(targetType)) continue;
+
+            int nameMatchPercent = 0;
+            if (myItem.getItemName() != null && other.getItemName() != null) {
+                String n1 = myItem.getItemName().toLowerCase().trim();
+                String n2 = other.getItemName().toLowerCase().trim();
+                nameMatchPercent = calculateFuzzyMatchPercentage(n1, n2);
+                if (n1.contains(n2) || n2.contains(n1)) nameMatchPercent = Math.max(nameMatchPercent, 80);
+            }
+
+            int locationMatchPercent = 0;
+            if (myItem.getLocation() != null && other.getLocation() != null) {
+                if (myItem.getLocation().trim().equalsIgnoreCase(other.getLocation().trim())) {
+                    locationMatchPercent = 100;
+                } else {
+                    locationMatchPercent = calculateFuzzyMatchPercentage(
+                            myItem.getLocation().toLowerCase().trim(),
+                            other.getLocation().toLowerCase().trim());
+                }
+            }
+
+            int tagsMatchPercent = 0;
+            if (myItem.getTags() != null && other.getTags() != null) {
+                String[] t1 = myItem.getTags().toLowerCase().split(",");
+                String[] t2 = other.getTags().toLowerCase().split(",");
+                for (String a : t1) {
+                    for (String b : t2) {
+                        if (!a.trim().isEmpty() && !b.trim().isEmpty()) {
+                            int tagMatchPercent = calculateFuzzyMatchPercentage(a.trim(), b.trim());
+                            if (tagMatchPercent > tagsMatchPercent) tagsMatchPercent = tagMatchPercent;
+                        }
+                    }
+                }
+            }
+
+            int score = (int) ((nameMatchPercent * 0.6) + (locationMatchPercent * 0.3) + (tagsMatchPercent * 0.1));
+            
+            if (score > bestScore) {
+                bestScore = score;
+                bestMatch = other;
+            }
+        }
+
+        // Resolve the best match if one is found
+        if (bestMatch != null && bestScore >= 60) { // Changed threshold to 60 to be stricter
+            bestMatch.setItemStatus("RESOLVED");
+            itemRepo.save(bestMatch);
+        }
     }
 
     // ================= FUZZY MATCH ALGORITHM (LEVENSHTEIN) =================

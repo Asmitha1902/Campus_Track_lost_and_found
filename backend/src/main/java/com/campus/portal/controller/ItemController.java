@@ -50,14 +50,8 @@ public class ItemController {
             HttpServletRequest request
     ) {
         try {
-            HttpSession session = request.getSession(false);
-
-            if (session == null) {
-                return ResponseEntity.status(401).body("Session expired. Please login again.");
-            }
-
-            // ✅ Use userId (BEST PRACTICE)
-            Long userId = (Long) session.getAttribute("userId");
+            // ✅ Use userId from JWT Filter
+            Long userId = (Long) request.getAttribute("userId");
 
             if (userId == null) {
                 return ResponseEntity.status(401).body("User not logged in");
@@ -155,6 +149,19 @@ public ResponseEntity<?> getApprovedItems() {
         }
     }
 
+    // ================= RESOLVE MATCH =================
+    @PutMapping("/resolve/{id}")
+    public ResponseEntity<?> resolveMatch(@PathVariable Long id) {
+        try {
+            service.resolveMatch(id);
+            return ResponseEntity.ok("RESOLVED");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500)
+                    .body("Error resolving item");
+        }
+    }
+
     // ================= UPDATE STATUS =================
     @PutMapping("/item-status/{id}")
     public ResponseEntity<?> updateItemStatus(
@@ -186,13 +193,7 @@ public ResponseEntity<?> getApprovedItems() {
 @GetMapping("/my-posts")
 public ResponseEntity<?> getMyPosts(HttpServletRequest request) {
     try {
-        HttpSession session = request.getSession(false);
-
-        if (session == null) {
-            return ResponseEntity.status(401).body("Session expired");
-        }
-
-        Long userId = (Long) session.getAttribute("userId");
+        Long userId = (Long) request.getAttribute("userId");
 
         if (userId == null) {
             return ResponseEntity.status(401).body("Not logged in");
@@ -209,15 +210,8 @@ public ResponseEntity<?> getMyPosts(HttpServletRequest request) {
 public ResponseEntity<?> getMatches(HttpServletRequest request) {
 
     try {
-        HttpSession session = request.getSession(false);
-
-        // ❌ No session
-        if (session == null) {
-            return ResponseEntity.status(401).body("Session not found");
-        }
-
-        // ❌ No userId in session
-        Long userId = (Long) session.getAttribute("userId");
+        // ❌ No userId in request
+        Long userId = (Long) request.getAttribute("userId");
         if (userId == null) {
             return ResponseEntity.status(401).body("User not logged in");
         }

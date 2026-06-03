@@ -8,9 +8,21 @@ const SidebarLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const user = JSON.parse(localStorage.getItem("user"));
-
+  const [user, setUser] = useState(null);
   const [unreadCount, setUnreadCount] = useState(0);
+
+  useEffect(() => {
+    fetch("http://localhost:9090/api/auth/me", { credentials: "include" })
+      .then(res => {
+        if (!res.ok) {
+          navigate("/login");
+          throw new Error("Not authenticated");
+        }
+        return res.json();
+      })
+      .then(data => setUser(data))
+      .catch(err => console.error(err));
+  }, []);
 
   // 🔥 FETCH UNREAD COUNT
   useEffect(() => {
@@ -38,8 +50,12 @@ const SidebarLayout = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const logout = () => {
-    localStorage.removeItem("user");
+  const logout = async () => {
+    try {
+      await fetch("http://localhost:9090/api/auth/logout", { method: "POST", credentials: "include" });
+    } catch (e) {
+      console.error(e);
+    }
     navigate("/login");
   };
 

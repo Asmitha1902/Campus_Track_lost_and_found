@@ -7,11 +7,28 @@ import { FaUserCircle } from "react-icons/fa";
 const AdminSidebarLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const admin = JSON.parse(localStorage.getItem("admin"));
+  const [admin, setAdmin] = React.useState(null);
   const basePath = "/admin-dashboard"; // base path for admin routes
 
-  const logout = () => {
-    localStorage.removeItem("admin");
+  React.useEffect(() => {
+    fetch("http://localhost:9090/api/admin/me", { credentials: "include" })
+      .then(res => {
+        if (!res.ok) {
+          navigate("/admin-login");
+          throw new Error("Not authenticated");
+        }
+        return res.json();
+      })
+      .then(data => setAdmin(data))
+      .catch(err => console.error(err));
+  }, [navigate]);
+
+  const logout = async () => {
+    try {
+      await fetch("http://localhost:9090/api/admin/logout", { method: "POST", credentials: "include" });
+    } catch (e) {
+      console.error(e);
+    }
     navigate("/admin-login");
   };
 

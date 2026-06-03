@@ -21,14 +21,16 @@ const StudentDashboard = () => {
 
   useEffect(() => {
 
-    const storedUser = localStorage.getItem("user");
-
-    if (!storedUser) {
-      navigate("/login");
-      return;
-    }
-
-    setUser(JSON.parse(storedUser));
+    fetch("http://localhost:9090/api/auth/me", { credentials: "include" })
+      .then(res => {
+        if (!res.ok) {
+          navigate("/login");
+          throw new Error("Not authenticated");
+        }
+        return res.json();
+      })
+      .then(data => setUser(data))
+      .catch(err => console.error(err));
 
     // ✅ FETCH POSTS
     fetch("http://localhost:9090/api/items/approved", {
@@ -84,8 +86,12 @@ fetch("http://localhost:9090/api/items/matches", {
     }
   };
 
-  const logout = () => {
-    localStorage.removeItem("user");
+  const logout = async () => {
+    try {
+      await fetch("http://localhost:9090/api/auth/logout", { method: "POST", credentials: "include" });
+    } catch (e) {
+      console.error(e);
+    }
     navigate("/login");
   };
   // ✅ COUNTS
@@ -95,12 +101,11 @@ const activePosts = posts.filter(
   (p) => (p.itemStatus || "active").toLowerCase() === "active"
 ).length;
 
-// 🔥 ONLY FOUND COUNT (IMPORTANT FIX)
 const matchedPosts = posts.filter(
-  (p) =>
-    p.itemStatus?.toLowerCase() === "matched" &&
-    p.type?.toLowerCase() === "found"
+  (p) => p.itemStatus?.toLowerCase() === "matched"
 ).length;
+
+const otherPosts = posts.length - (activePosts + matchedPosts);
   return (
 
     <div className="dashboard-container">
@@ -144,11 +149,11 @@ const matchedPosts = posts.filter(
 
           <div className="stat1-card">
             <div className="stat1-icon">
-              <MessageCircle size={20} />
+              <CheckCircle size={20} />
             </div>
             <div className="stat1-info">
-              <h3>0</h3>
-              <p>Messages</p>
+              <h3>{otherPosts}</h3>
+              <p>Inactive/Resolved</p>
             </div>
           </div>
 

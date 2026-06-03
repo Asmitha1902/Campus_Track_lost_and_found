@@ -27,13 +27,7 @@ public class UserController {
     @GetMapping("/me")
     public ResponseEntity<?> getProfile(HttpServletRequest request) {
 
-        HttpSession session = request.getSession(false);
-
-        if (session == null) {
-            return ResponseEntity.status(401).body("Session expired");
-        }
-
-        Long userId = (Long) session.getAttribute("userId");
+        Long userId = (Long) request.getAttribute("userId");
 
         if (userId == null) {
             return ResponseEntity.status(401).body("Not logged in");
@@ -55,8 +49,7 @@ public class UserController {
             HttpServletRequest request
     ) {
 
-        HttpSession session = request.getSession(false);
-        Long userId = (Long) session.getAttribute("userId");
+        Long userId = (Long) request.getAttribute("userId");
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -78,8 +71,7 @@ public class UserController {
             HttpServletRequest request
     ) {
 
-        HttpSession session = request.getSession(false);
-        Long userId = (Long) session.getAttribute("userId");
+        Long userId = (Long) request.getAttribute("userId");
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
