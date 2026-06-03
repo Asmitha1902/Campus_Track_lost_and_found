@@ -29,11 +29,11 @@ Render will host your Java Spring Boot API.
 ### 1. Update Backend Code
 Before deploying, you must connect the backend to your new cloud database.
 * Open `backend/src/main/resources/application.properties`.
-* Update the database lines using the Aiven details from Step 2:
+* Update the database lines to use Environment Variables (this protects your password from GitHub):
   ```properties
-  spring.datasource.url=jdbc:mysql://[AIVEN_HOST_URL]:[AIVEN_PORT]/defaultdb?sslMode=REQUIRED
-  spring.datasource.username=[AIVEN_USER]
-  spring.datasource.password=[AIVEN_PASSWORD]
+  spring.datasource.url=${DB_URL:jdbc:mysql://localhost:3306/campus_portal}
+  spring.datasource.username=${DB_USERNAME:root}
+  spring.datasource.password=${DB_PASSWORD:root}
   ```
 * Push these changes to your GitHub backend repository.
 
@@ -45,7 +45,11 @@ Before deploying, you must connect the backend to your new cloud database.
    * **Runtime:** Java
    * **Build Command:** `mvn clean package -DskipTests`
    * **Start Command:** `java -jar target/portal-0.0.1-SNAPSHOT.jar`
-5. Click **Create Web Service**.
+5. **CRITICAL:** Scroll down, click **Environment**, and add these variables:
+   * **Key:** `DB_URL` | **Value:** `jdbc:mysql://[AIVEN_HOST_URL]:[AIVEN_PORT]/defaultdb?sslMode=REQUIRED`
+   * **Key:** `DB_USERNAME` | **Value:** `[AIVEN_USER]`
+   * **Key:** `DB_PASSWORD` | **Value:** `[AIVEN_PASSWORD]`
+6. Click **Create Web Service**.
 6. Once the build is finished, Render will give you a live URL (e.g., `https://campus-backend.onrender.com`). **Save this URL.**
 
 ---
