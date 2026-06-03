@@ -68,7 +68,7 @@ const LostFound = () => {
   
  try {
       // ✅ Send request without userId, backend attaches logged-in user automatically
-    const res = await fetch("http://localhost:9090/api/items/report", {
+    const res = await fetch("https://campus-track-lost-and-found-3.onrender.com/api/items/report", {
   method: "POST",
   body: formData,
   credentials: "include"

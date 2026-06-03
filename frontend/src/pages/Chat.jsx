@@ -13,7 +13,7 @@ const Chat = () => {
 
   useEffect(() => {
     let reqInterval;
-    fetch("http://localhost:9090/api/auth/me", { credentials: "include" })
+    fetch("https://campus-track-lost-and-found-3.onrender.com/api/auth/me", { credentials: "include" })
       .then(res => {
         if (!res.ok) {
           navigate("/login");
@@ -37,7 +37,7 @@ const Chat = () => {
 
   const fetchRequests = async (userId) => {
     try {
-      const res = await fetch(`http://localhost:9090/api/chat/requests`, {
+      const res = await fetch(`https://campus-track-lost-and-found-3.onrender.com/api/chat/requests`, {
         credentials: "include"
       });
       if (res.ok) {
@@ -58,7 +58,7 @@ const Chat = () => {
 
   const fetchMessages = async (reqId) => {
     try {
-      const res = await fetch(`http://localhost:9090/api/chat/messages/${reqId}`, {
+      const res = await fetch(`https://campus-track-lost-and-found-3.onrender.com/api/chat/messages/${reqId}`, {
         credentials: "include"
       });
       if (res.ok) {
@@ -91,7 +91,7 @@ const Chat = () => {
 
   const handleStatusChange = async (reqId, status) => {
     try {
-      const res = await fetch(`http://localhost:9090/api/chat/request/${reqId}/status`, {
+      const res = await fetch(`https://campus-track-lost-and-found-3.onrender.com/api/chat/request/${reqId}/status`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status }),
@@ -113,7 +113,7 @@ const Chat = () => {
     if (!msgInput.trim() || !activeRequest || activeRequest.status !== "ACCEPTED") return;
 
     try {
-      const res = await fetch("http://localhost:9090/api/chat/message", {
+      const res = await fetch("https://campus-track-lost-and-found-3.onrender.com/api/chat/message", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

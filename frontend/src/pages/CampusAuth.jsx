@@ -58,7 +58,7 @@ const CampusAuth = () => {
     }
 
     try {
-     const res = await fetch("http://localhost:9090/api/auth/register", {
+     const res = await fetch("https://campus-track-lost-and-found-3.onrender.com/api/auth/register", {
   method: "POST",
   headers: { "Content-Type": "application/json" },
   credentials: "include", // 🔥 ADD THIS
@@ -87,7 +87,7 @@ const CampusAuth = () => {
     }
 
     try {
-      const res = await fetch("http://localhost:9090/api/auth/verify", {
+      const res = await fetch("https://campus-track-lost-and-found-3.onrender.com/api/auth/verify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: formData.email, otp })
@@ -117,7 +117,7 @@ const CampusAuth = () => {
   }
 
   try {
-    const res = await fetch("http://localhost:9090/api/auth/login", {
+    const res = await fetch("https://campus-track-lost-and-found-3.onrender.com/api/auth/login", {
   method: "POST",
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify({
@@ -150,7 +150,7 @@ const CampusAuth = () => {
     }
 
     try {
-      const res = await fetch("http://localhost:9090/api/auth/forgot-password", {
+      const res = await fetch("https://campus-track-lost-and-found-3.onrender.com/api/auth/forgot-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: formData.email })
@@ -178,7 +178,7 @@ const CampusAuth = () => {
     }
 
     try {
-      const res = await fetch("http://localhost:9090/api/auth/reset-password", {
+      const res = await fetch("https://campus-track-lost-and-found-3.onrender.com/api/auth/reset-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: formData.email, otp, password: formData.password })
@@ -200,7 +200,7 @@ const CampusAuth = () => {
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = "http://localhost:9090/oauth2/authorization/google";
+    window.location.href = "https://campus-track-lost-and-found-3.onrender.com/oauth2/authorization/google";
   };
 
   return (

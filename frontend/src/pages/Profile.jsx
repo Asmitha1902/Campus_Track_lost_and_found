@@ -22,7 +22,7 @@ export default function Profile() {
 
   const loadUser = async () => {
     try {
-      const res = await fetch("http://localhost:9090/api/users/me", {
+      const res = await fetch("https://campus-track-lost-and-found-3.onrender.com/api/users/me", {
         credentials: "include",
       });
       const data = await res.json();
@@ -42,7 +42,7 @@ export default function Profile() {
 
   const handleSubmit = async () => {
     try {
-      await fetch("http://localhost:9090/api/users/update", {
+      await fetch("https://campus-track-lost-and-found-3.onrender.com/api/users/update", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -56,7 +56,7 @@ export default function Profile() {
 
   const handlePasswordSubmit = async () => {
     try {
-      const res = await fetch("http://localhost:9090/api/users/change-password", {
+      const res = await fetch("https://campus-track-lost-and-found-3.onrender.com/api/users/change-password", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         credentials: "include",

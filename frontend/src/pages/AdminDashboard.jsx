@@ -23,7 +23,7 @@ const AdminDashboard = () => {
   useEffect(() => {
 
     // ✅ REPORT API
-    fetch("http://localhost:9090/api/reports", {
+    fetch("https://campus-track-lost-and-found-3.onrender.com/api/reports", {
       credentials: "include"
     })
       .then(res => res.json())
@@ -62,7 +62,7 @@ console.log("REPORT DATA 👉", res);
       });
 
     // ✅ USERS API
-    fetch("http://localhost:9090/api/admin/users", {
+    fetch("https://campus-track-lost-and-found-3.onrender.com/api/admin/users", {
       credentials: "include"
     })
       .then(res => res.json())

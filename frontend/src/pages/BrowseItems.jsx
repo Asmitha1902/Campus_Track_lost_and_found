@@ -14,7 +14,7 @@ export default function BrowseItems() {
 
   // ✅ FETCH ONLY APPROVED ITEMS
   useEffect(() => {
-  fetch("http://localhost:9090/api/items/approved", {
+  fetch("https://campus-track-lost-and-found-3.onrender.com/api/items/approved", {
     method: "GET",
     credentials: "include"   // 🔥 IMPORTANT
   })
@@ -184,7 +184,7 @@ export default function BrowseItems() {
               {/* IMAGE */}
               {item.imagePath && (
                 <img
-                  src={`http://localhost:9090/uploads/${item.imagePath}`}
+                  src={`https://campus-track-lost-and-found-3.onrender.com/uploads/${item.imagePath}`}
                   alt="item"
                   className="item-image"
                 />

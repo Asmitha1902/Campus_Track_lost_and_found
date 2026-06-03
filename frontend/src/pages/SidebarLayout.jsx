@@ -12,7 +12,7 @@ const SidebarLayout = () => {
   const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
-    fetch("http://localhost:9090/api/auth/me", { credentials: "include" })
+    fetch("https://campus-track-lost-and-found-3.onrender.com/api/auth/me", { credentials: "include" })
       .then(res => {
         if (!res.ok) {
           navigate("/login");
@@ -29,7 +29,7 @@ const SidebarLayout = () => {
     const fetchCount = async () => {
       try {
         const res = await fetch(
-          "http://localhost:9090/api/notifications/my",
+          "https://campus-track-lost-and-found-3.onrender.com/api/notifications/my",
           { credentials: "include" }
         );
 
@@ -52,7 +52,7 @@ const SidebarLayout = () => {
 
   const logout = async () => {
     try {
-      await fetch("http://localhost:9090/api/auth/logout", { method: "POST", credentials: "include" });
+      await fetch("https://campus-track-lost-and-found-3.onrender.com/api/auth/logout", { method: "POST", credentials: "include" });
     } catch (e) {
       console.error(e);
     }

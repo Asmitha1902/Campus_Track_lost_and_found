@@ -21,7 +21,7 @@ const StudentDashboard = () => {
 
   useEffect(() => {
 
-    fetch("http://localhost:9090/api/auth/me", { credentials: "include" })
+    fetch("https://campus-track-lost-and-found-3.onrender.com/api/auth/me", { credentials: "include" })
       .then(res => {
         if (!res.ok) {
           navigate("/login");
@@ -33,7 +33,7 @@ const StudentDashboard = () => {
       .catch(err => console.error(err));
 
     // ✅ FETCH POSTS
-    fetch("http://localhost:9090/api/items/approved", {
+    fetch("https://campus-track-lost-and-found-3.onrender.com/api/items/approved", {
       method: "GET",
       credentials: "include"
     })
@@ -46,7 +46,7 @@ const StudentDashboard = () => {
 
     // 🔥 FETCH MATCHES
    
-fetch("http://localhost:9090/api/items/matches", {
+fetch("https://campus-track-lost-and-found-3.onrender.com/api/items/matches", {
     method: "GET",
     credentials: "include"
   })
@@ -64,7 +64,7 @@ fetch("http://localhost:9090/api/items/matches", {
 
   const sendChatRequest = async (matchedItem) => {
     try {
-      const res = await fetch("http://localhost:9090/api/chat/request", {
+      const res = await fetch("https://campus-track-lost-and-found-3.onrender.com/api/chat/request", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -88,7 +88,7 @@ fetch("http://localhost:9090/api/items/matches", {
 
   const logout = async () => {
     try {
-      await fetch("http://localhost:9090/api/auth/logout", { method: "POST", credentials: "include" });
+      await fetch("https://campus-track-lost-and-found-3.onrender.com/api/auth/logout", { method: "POST", credentials: "include" });
     } catch (e) {
       console.error(e);
     }
@@ -187,7 +187,7 @@ const otherPosts = posts.length - (activePosts + matchedPosts);
           </div>
           {post.imagePath && (
             <img
-              src={`http://localhost:9090/uploads/${post.imagePath}`}
+              src={`https://campus-track-lost-and-found-3.onrender.com/uploads/${post.imagePath}`}
               alt="item"
               className="item-image"
             />
@@ -245,7 +245,7 @@ const otherPosts = posts.length - (activePosts + matchedPosts);
         </div>
         {item.imagePath && (
           <img
-            src={`http://localhost:9090/uploads/${item.imagePath}`}
+            src={`https://campus-track-lost-and-found-3.onrender.com/uploads/${item.imagePath}`}
             alt="item"
             className="item-image"
           />

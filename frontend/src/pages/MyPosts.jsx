@@ -9,7 +9,7 @@ const MyPosts = () => {
   const [filter, setFilter] = useState("all");
 
   useEffect(() => {
-    fetch("http://localhost:9090/api/items/my-posts", {
+    fetch("https://campus-track-lost-and-found-3.onrender.com/api/items/my-posts", {
       credentials: "include"
     })
       .then(res => res.json())
@@ -31,7 +31,7 @@ const MyPosts = () => {
 
   // 🔥 DELETE
   const deletePost = async (id) => {
-    await fetch(`http://localhost:9090/api/items/${id}`, {
+    await fetch(`https://campus-track-lost-and-found-3.onrender.com/api/items/${id}`, {
       method: "DELETE",
       credentials: "include"
     });
@@ -42,7 +42,7 @@ const MyPosts = () => {
   // 🔥 CLAIM ITEM (RESOLVE MATCH)
   const claimItem = async (id) => {
     try {
-      const res = await fetch(`http://localhost:9090/api/items/resolve/${id}`, {
+      const res = await fetch(`https://campus-track-lost-and-found-3.onrender.com/api/items/resolve/${id}`, {
         method: "PUT",
         credentials: "include"
       });
@@ -117,7 +117,7 @@ const MyPosts = () => {
               {/* IMAGE */}
               {post.imagePath && (
                 <img
-                  src={`http://localhost:9090/uploads/${post.imagePath}`}
+                  src={`https://campus-track-lost-and-found-3.onrender.com/uploads/${post.imagePath}`}
                   alt="item"
                   className="item11-img"
                 />

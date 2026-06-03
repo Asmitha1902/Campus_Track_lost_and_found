@@ -12,7 +12,7 @@ const Reports = () => {
   const [trendData, setTrendData] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:9090/api/reports")
+    fetch("https://campus-track-lost-and-found-3.onrender.com/api/reports")
       .then(res => res.json())
       .then(data => {
 

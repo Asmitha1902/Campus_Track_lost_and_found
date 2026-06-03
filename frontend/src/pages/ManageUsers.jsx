@@ -11,7 +11,7 @@ const ManageUsers = () => {
     try {
       setLoading(true);
 
-      const res = await fetch("http://localhost:9090/api/admin/users", {
+      const res = await fetch("https://campus-track-lost-and-found-3.onrender.com/api/admin/users", {
         credentials: "include",
       });
 
@@ -30,7 +30,7 @@ const ManageUsers = () => {
       setLoading(true);
 
       const res = await fetch(
-        `http://localhost:9090/api/admin/users/search?name=${query}`,
+        `https://campus-track-lost-and-found-3.onrender.com/api/admin/users/search?name=${query}`,
         {
           credentials: "include",
         }
@@ -66,7 +66,7 @@ const ManageUsers = () => {
   // ✅ Delete user
   const deleteUser = async (id) => {
     try {
-      await fetch(`http://localhost:9090/api/admin/users/${id}`, {
+      await fetch(`https://campus-track-lost-and-found-3.onrender.com/api/admin/users/${id}`, {
         method: "DELETE",
         credentials: "include",
       });
@@ -80,7 +80,7 @@ const ManageUsers = () => {
   // ✅ Toggle status
   const toggleStatus = async (id) => {
     try {
-      await fetch(`http://localhost:9090/api/admin/users/toggle/${id}`, {
+      await fetch(`https://campus-track-lost-and-found-3.onrender.com/api/admin/users/toggle/${id}`, {
         method: "PUT",
         credentials: "include",
       });

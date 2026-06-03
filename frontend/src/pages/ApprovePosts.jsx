@@ -17,7 +17,7 @@ const fetchPosts = async () => {
     setLoading(true);
     setError(null);
 
-    const response = await fetch("http://localhost:9090/api/items/pending", {
+    const response = await fetch("https://campus-track-lost-and-found-3.onrender.com/api/items/pending", {
       credentials: "include" // ✅ OK
     });
 
@@ -38,7 +38,7 @@ const fetchPosts = async () => {
 // ✅ Approve item (FIX HERE)
 const handleApprove = async (id) => {
   try {
-    const res = await fetch(`http://localhost:9090/api/items/approve/${id}`, {
+    const res = await fetch(`https://campus-track-lost-and-found-3.onrender.com/api/items/approve/${id}`, {
       method: "PUT",
       credentials: "include" // 🔥 ADD THIS
     });
@@ -55,7 +55,7 @@ const handleApprove = async (id) => {
 // ✅ Reject item (FIX HERE)
 const handleReject = async (id) => {
   try {
-    const res = await fetch(`http://localhost:9090/api/items/reject/${id}`, {
+    const res = await fetch(`https://campus-track-lost-and-found-3.onrender.com/api/items/reject/${id}`, {
       method: "PUT",
       credentials: "include" // 🔥 ADD THIS
     });
@@ -72,7 +72,7 @@ const handleReject = async (id) => {
 // ✅ Remove item (FIX HERE)
 const handleRemove = async (id) => {
   try {
-    const res = await fetch(`http://localhost:9090/api/items/${id}`, {
+    const res = await fetch(`https://campus-track-lost-and-found-3.onrender.com/api/items/${id}`, {
       method: "DELETE",
       credentials: "include" // 🔥 ADD THIS
     });
@@ -118,7 +118,7 @@ const handleRemove = async (id) => {
                 <td>
                   {post.imagePath ? (
                     <img
-                      src={`http://localhost:9090/uploads/${post.imagePath}`}
+                      src={`https://campus-track-lost-and-found-3.onrender.com/uploads/${post.imagePath}`}
                       alt={post.itemName}
                       width="50"
                     />
