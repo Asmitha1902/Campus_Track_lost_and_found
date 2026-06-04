@@ -108,15 +108,15 @@ public class AuthService {
     User user = userRepository.findByEmail(request.getEmail()).orElse(null);
 
     if (user == null) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(java.util.Collections.singletonMap("message", "User not found"));
     }
 
     if (!user.isEmailVerified()) {
-        return ResponseEntity.badRequest().body("Verify email first");
+        return ResponseEntity.badRequest().body(java.util.Collections.singletonMap("message", "Verify email first"));
     }
 
     if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-        return ResponseEntity.badRequest().body("Invalid password");
+        return ResponseEntity.badRequest().body(java.util.Collections.singletonMap("message", "Invalid password"));
     }
 
     // ✅ Use constructor mapping (BEST PRACTICE)

@@ -24,7 +24,7 @@ import jakarta.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("/api/items")
-@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+
 public class ItemController {
 
     private final ItemService service;

@@ -8,7 +8,7 @@ import com.campus.portal.service.ItemService;
 
 @RestController
 @RequestMapping("/api/reports")
-@CrossOrigin(origins = "http://localhost:5173")
+
 public class ReportController {
 
     @Autowired

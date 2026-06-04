@@ -21,10 +21,6 @@ import java.util.Collections;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
-@CrossOrigin(origins = {
-        "http://localhost:5173",
-        "https://campus-track-lost-and-found-git-main-asmitha1902s-projects.vercel.app"
-}, allowCredentials = "true")
 public class AuthController {
 
     private final AuthService authService;
