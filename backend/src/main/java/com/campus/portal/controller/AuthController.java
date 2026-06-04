@@ -57,13 +57,14 @@ public class AuthController {
             // Generate JWT Token
             String token = jwtUtil.generateToken(userDTO.getEmail());
 
-            // Set HttpOnly Cookie
-            Cookie cookie = new Cookie("jwt_token", token);
-            cookie.setHttpOnly(true);
-            cookie.setSecure(false); // Set to true if using HTTPS
-            cookie.setPath("/");
-            cookie.setMaxAge(24 * 60 * 60); // 1 day
-            httpResponse.addCookie(cookie);
+            org.springframework.http.ResponseCookie resCookie = org.springframework.http.ResponseCookie.from("jwt_token", token)
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .maxAge(24 * 60 * 60)
+                .sameSite("None")
+                .build();
+            httpResponse.addHeader(org.springframework.http.HttpHeaders.SET_COOKIE, resCookie.toString());
 
             return ResponseEntity.ok().body(
                     new java.util.HashMap<String, Object>() {
@@ -97,12 +98,14 @@ public class AuthController {
     // ================= LOGOUT =================
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpServletResponse httpResponse) {
-        Cookie cookie = new Cookie("jwt_token", null);
-        cookie.setHttpOnly(true);
-        cookie.setSecure(false);
-        cookie.setPath("/");
-        cookie.setMaxAge(0);
-        httpResponse.addCookie(cookie);
+        org.springframework.http.ResponseCookie resCookie = org.springframework.http.ResponseCookie.from("jwt_token", "")
+            .httpOnly(true)
+            .secure(true)
+            .path("/")
+            .maxAge(0)
+            .sameSite("None")
+            .build();
+        httpResponse.addHeader(org.springframework.http.HttpHeaders.SET_COOKIE, resCookie.toString());
         return ResponseEntity.ok("Logout successful");
     }
 

@@ -77,12 +77,14 @@ public class AdminController {
 
         if ("SUCCESS".equals(admin)) {
             String token = jwtUtil.generateToken(request.getEmail().trim());
-            Cookie cookie = new Cookie("admin_jwt_token", token);
-            cookie.setHttpOnly(true);
-            cookie.setSecure(false);
-            cookie.setPath("/");
-            cookie.setMaxAge(24 * 60 * 60);
-            response.addCookie(cookie);
+            org.springframework.http.ResponseCookie resCookie = org.springframework.http.ResponseCookie.from("admin_jwt_token", token)
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .maxAge(24 * 60 * 60)
+                .sameSite("None")
+                .build();
+            response.addHeader(org.springframework.http.HttpHeaders.SET_COOKIE, resCookie.toString());
 
             return ResponseEntity.ok(Map.of(
                     "status", "SUCCESS",
@@ -123,12 +125,14 @@ public class AdminController {
     // =========================================
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpServletResponse response) {
-        Cookie cookie = new Cookie("admin_jwt_token", null);
-        cookie.setHttpOnly(true);
-        cookie.setSecure(false);
-        cookie.setPath("/");
-        cookie.setMaxAge(0);
-        response.addCookie(cookie);
+        org.springframework.http.ResponseCookie resCookie = org.springframework.http.ResponseCookie.from("admin_jwt_token", "")
+            .httpOnly(true)
+            .secure(true)
+            .path("/")
+            .maxAge(0)
+            .sameSite("None")
+            .build();
+        response.addHeader(org.springframework.http.HttpHeaders.SET_COOKIE, resCookie.toString());
         return ResponseEntity.ok("Logout successful");
     }
 
