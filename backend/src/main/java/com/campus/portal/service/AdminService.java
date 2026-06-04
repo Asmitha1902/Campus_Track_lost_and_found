@@ -17,20 +17,10 @@ public class AdminService {
 
     public String login(String email, String password) {
 
-        // 🔹 find admin by email
-        Optional<Admin> optionalAdmin = repo.findByEmail(email);
-
-        if (optionalAdmin.isEmpty()) {
-            return "Invalid credentials";
+        if ("admin@mlrit.ac.in".equals(email) && "admin123".equals(password)) {
+            return "SUCCESS";
         }
 
-        Admin admin = optionalAdmin.get();
-
-        // 🔹 check password
-        if (!admin.getPassword().equals(password)) {
-            return "Invalid credentials";
-        }
-
-        return "SUCCESS";
+        return "Invalid credentials";
     }
 }
