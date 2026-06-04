@@ -21,7 +21,10 @@ import java.util.Collections;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true") // Fixed port to match frontend
+@CrossOrigin(origins = {
+        "http://localhost:5173",
+        "https://campus-track-lost-and-found-git-main-asmitha1902s-projects.vercel.app"
+}, allowCredentials = "true") // Fixed port to match frontend
 public class AuthController {
 
     private final AuthService authService;
@@ -44,8 +47,7 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(
             @RequestBody LoginRequest request,
-            HttpServletResponse httpResponse
-    ) {
+            HttpServletResponse httpResponse) {
         ResponseEntity<?> response = authService.login(request);
 
         if (!response.getStatusCode().is2xxSuccessful()) {
@@ -68,10 +70,11 @@ public class AuthController {
             httpResponse.addCookie(cookie);
 
             return ResponseEntity.ok().body(
-                new java.util.HashMap<String, Object>() {{
-                    put("message", "Login successful");
-                }}
-            );
+                    new java.util.HashMap<String, Object>() {
+                        {
+                            put("message", "Login successful");
+                        }
+                    });
         }
 
         return ResponseEntity.status(500).body("Unexpected error");
@@ -83,18 +86,18 @@ public class AuthController {
         if (SecurityContextHolder.getContext().getAuthentication() == null) {
             return ResponseEntity.status(401).body("Not authenticated");
         }
-        
+
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByEmail(email).orElse(null);
-        
+
         if (user == null) {
             return ResponseEntity.status(404).body("User not found");
         }
-        
+
         UserDTO userDTO = new UserDTO(user);
         return ResponseEntity.ok(userDTO);
     }
-    
+
     // ================= LOGOUT =================
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpServletResponse httpResponse) {

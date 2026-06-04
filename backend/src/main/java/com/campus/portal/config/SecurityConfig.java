@@ -25,52 +25,50 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http
-            // ❌ Disable CSRF
-            .csrf(csrf -> csrf.disable())
+                // ❌ Disable CSRF
+                .csrf(csrf -> csrf.disable())
 
-            // ✅ Enable CORS
-            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                // ✅ Enable CORS
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
 
-            // 🔐 Authorization rules
-            .authorizeHttpRequests(auth -> auth
+                // 🔐 Authorization rules
+                .authorizeHttpRequests(auth -> auth
 
-                // ✅ Preflight (CORS)
-                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        // ✅ Preflight (CORS)
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
-                // ✅ AUTH APIs (REGISTER + LOGIN)
-                .requestMatchers("/api/auth/**").permitAll()
+                        // ✅ AUTH APIs (REGISTER + LOGIN)
+                        .requestMatchers("/api/auth/**").permitAll()
 
-                // ✅ ADMIN APIs
-                .requestMatchers("/api/admin/**").permitAll()
-                .requestMatchers("/api/reports").permitAll()
-                .requestMatchers(HttpMethod.PUT, "/api/items/approve/**").permitAll()
-    .requestMatchers(HttpMethod.PUT, "/api/items/reject/**").permitAll()
+                        // ✅ ADMIN APIs
+                        .requestMatchers("/api/admin/**").permitAll()
+                        .requestMatchers("/api/reports").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/items/approve/**").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/items/reject/**").permitAll()
 
-                // ✅ PUBLIC APIs
-                .requestMatchers("/uploads/**").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/items/**").permitAll()
+                        // ✅ PUBLIC APIs
+                        .requestMatchers("/uploads/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/items/**").permitAll()
 
-                // 🔒 PROTECTED APIs
-                .requestMatchers("/api/items/my-posts").authenticated()
-                .requestMatchers(HttpMethod.POST, "/api/items/**").authenticated()
-                .requestMatchers(HttpMethod.PUT, "/api/items/**").authenticated()
-                .requestMatchers(HttpMethod.DELETE, "/api/items/**").authenticated()
+                        // 🔒 PROTECTED APIs
+                        .requestMatchers("/api/items/my-posts").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/items/**").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/api/items/**").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/items/**").authenticated()
 
-                // बाकी सब protected
-                .anyRequest().authenticated()
-            )
+                        // बाकी सब protected
+                        .anyRequest().authenticated())
 
-            // ❌ Disable default login UI
-            .httpBasic(httpBasic -> httpBasic.disable())
-            .formLogin(form -> form.disable())
+                // ❌ Disable default login UI
+                .httpBasic(httpBasic -> httpBasic.disable())
+                .formLogin(form -> form.disable())
 
-            // ✅ IMPORTANT: STATELESS SESSION FOR JWT
-            .sessionManagement(session -> session
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            )
-            
-            // Add JWT filter
-            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+                // ✅ IMPORTANT: STATELESS SESSION FOR JWT
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+
+                // Add JWT filter
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
@@ -81,7 +79,9 @@ public class SecurityConfig {
 
         CorsConfiguration config = new CorsConfiguration();
 
-        config.setAllowedOrigins(List.of("http://localhost:5173"));
+        config.setAllowedOrigins(List.of(
+                "http://localhost:5173",
+                "https://campus-track-lost-and-found-git-main-asmitha1902s-projects.vercel.app"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true); // ✅ REQUIRED for cookies
