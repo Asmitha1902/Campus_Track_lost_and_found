@@ -24,7 +24,7 @@ import java.util.Collections;
 @CrossOrigin(origins = {
         "http://localhost:5173",
         "https://campus-track-lost-and-found-git-main-asmitha1902s-projects.vercel.app"
-}, allowCredentials = "true") // Fixed port to match frontend
+}, allowCredentials = "true")
 public class AuthController {
 
     private final AuthService authService;
