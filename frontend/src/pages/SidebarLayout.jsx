@@ -12,16 +12,22 @@ const SidebarLayout = () => {
   const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
-    fetch("https://campus-track-lost-and-found-3.onrender.com/api/auth/me", { credentials: "include" })
-      .then(res => {
-        if (!res.ok) {
-          navigate("/login");
-          throw new Error("Not authenticated");
-        }
-        return res.json();
-      })
-      .then(data => setUser(data))
-      .catch(err => console.error(err));
+    const checkAuth = () => {
+      fetch("https://campus-track-lost-and-found-3.onrender.com/api/auth/me", { credentials: "include" })
+        .then(res => {
+          if (!res.ok) {
+            navigate("/login");
+            throw new Error("Not authenticated");
+          }
+          return res.json();
+        })
+        .then(data => setUser(data))
+        .catch(err => console.error(err));
+    };
+
+    // Small delay to ensure JWT cookie is readable after login redirect
+    const timer = setTimeout(checkAuth, 300);
+    return () => clearTimeout(timer);
   }, []);
 
   // 🔥 FETCH UNREAD COUNT

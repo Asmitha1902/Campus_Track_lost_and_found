@@ -50,9 +50,15 @@ public class AuthService {
             existingUser.setOtpExpiry(LocalDateTime.now().plusMinutes(5));
             userRepository.save(existingUser);
 
-            sendOtp(existingUser.getEmail(), otp);
+            try {
+                sendOtp(existingUser.getEmail(), otp);
+            } catch (Exception e) {
+                System.out.println("EMAIL FAILED: " + e.getMessage());
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Failed to send OTP email. Please check your email address and try again.");
+            }
 
-            return ResponseEntity.ok("OTP resent successfully");
+            return ResponseEntity.ok("OTP resent to your email. Please check inbox and spam.");
         }
 
         User user = User.builder()
@@ -68,9 +74,17 @@ public class AuthService {
 
         userRepository.save(user);
 
-        sendOtp(user.getEmail(), otp);
+        try {
+            sendOtp(user.getEmail(), otp);
+        } catch (Exception e) {
+            System.out.println("EMAIL FAILED: " + e.getMessage());
+            // Delete the user so they can retry registration
+            userRepository.delete(user);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Failed to send OTP email. Please check your email address and try again.");
+        }
 
-        return ResponseEntity.ok("OTP sent successfully");
+        return ResponseEntity.ok("OTP sent to your email. Please check inbox and spam.");
     }
 
     // ================= VERIFY OTP =================
@@ -139,9 +153,15 @@ public class AuthService {
         user.setOtpExpiry(LocalDateTime.now().plusMinutes(5));
         userRepository.save(user);
 
-        sendOtp(user.getEmail(), otp);
+        try {
+            sendOtp(user.getEmail(), otp);
+        } catch (Exception e) {
+            System.out.println("EMAIL FAILED: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Failed to send OTP email. Please try again.");
+        }
 
-        return ResponseEntity.ok("OTP sent successfully");
+        return ResponseEntity.ok("OTP sent to your email. Please check inbox and spam.");
     }
 
     // ================= RESET PASSWORD =================
@@ -178,15 +198,11 @@ public class AuthService {
         return String.valueOf(new Random().nextInt(900000) + 100000);
     }
 
-   private void sendOtp(String email, String otp) {
-    try {
+    private void sendOtp(String email, String otp) {
+        // Let exception propagate so caller can handle it properly
         emailService.sendOtpEmail(email, otp);
-        System.out.println("OTP SENT SUCCESS");
-    } catch (Exception e) {
-        System.out.println("EMAIL FAILED: " + e.getMessage());
-        e.printStackTrace(); // 👈 IMPORTANT
+        System.out.println("OTP SENT SUCCESS to: " + email);
     }
-}
     private boolean isValidEmail(String email) {
         return email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$");
     }
