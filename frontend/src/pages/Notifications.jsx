@@ -11,7 +11,7 @@ const Notification = () => {
   const fetchNotifications = useCallback(async () => {
     try {
       const res = await fetch(
-        "https://campus-track-lost-and-found-3.onrender.com/api/notifications/my",
+        "https://campus-track-lost-and-found-5.onrender.com/api/notifications/my",
         {
           credentials: "include",
         }
@@ -39,18 +39,18 @@ const Notification = () => {
     const interval = setInterval(fetchNotifications, 5000);
     return () => clearInterval(interval);
   }, [fetchNotifications]);
-const unreadCount = notifications.filter((n) => !n.read).length;
+  const unreadCount = notifications.filter((n) => !n.read).length;
   return (
     <div className="notif-page">
       <ToastContainer />
 
       <div className="notif-box">
         <h2 className="notif-title">
-  🔔 Notifications 
-  {unreadCount > 0 && (
-    <span className="notif-count">({unreadCount})</span>
-  )}
-</h2>
+          🔔 Notifications
+          {unreadCount > 0 && (
+            <span className="notif-count">({unreadCount})</span>
+          )}
+        </h2>
 
         {notifications.length === 0 ? (
           <p className="empty">No notifications</p>

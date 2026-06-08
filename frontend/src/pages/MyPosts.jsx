@@ -9,7 +9,7 @@ const MyPosts = () => {
   const [filter, setFilter] = useState("all");
 
   useEffect(() => {
-    fetch("https://campus-track-lost-and-found-3.onrender.com/api/items/my-posts", {
+    fetch("https://campus-track-lost-and-found-5.onrender.com/api/items/my-posts", {
       credentials: "include"
     })
       .then(res => res.json())
@@ -66,31 +66,31 @@ const MyPosts = () => {
       {/* 🔥 FILTER BUTTONS */}
       <div className="filters">
 
-        <button 
-          className={filter==="all"?"active":""} 
-          onClick={()=>setFilter("all")}
+        <button
+          className={filter === "all" ? "active" : ""}
+          onClick={() => setFilter("all")}
         >
           All ({posts.length})
         </button>
 
-        <button 
-          className={filter==="lost"?"active":""} 
-          onClick={()=>setFilter("lost")}
+        <button
+          className={filter === "lost" ? "active" : ""}
+          onClick={() => setFilter("lost")}
         >
           Lost
         </button>
 
-        <button 
-          className={filter==="found"?"active":""} 
-          onClick={()=>setFilter("found")}
+        <button
+          className={filter === "found" ? "active" : ""}
+          onClick={() => setFilter("found")}
         >
           Found
         </button>
 
         {/* 🔥 NEW MATCHED BUTTON */}
-        <button 
-          className={filter==="matched"?"active":""} 
-          onClick={()=>setFilter("matched")}
+        <button
+          className={filter === "matched" ? "active" : ""}
+          onClick={() => setFilter("matched")}
         >
           Matched
         </button>
@@ -150,26 +150,26 @@ const MyPosts = () => {
             <div className="actions">
               {post.itemStatus?.toLowerCase() === "matched" && (
                 <>
-                  <button 
+                  <button
                     className="chat-btn"
                     onClick={() => navigate("/chat")}
-                    style={{background: '#4f46e5', color: '#fff', border: 'none', padding: '5px 15px', borderRadius: '5px', cursor: 'pointer', fontSize: '14px', marginRight: '10px'}}
+                    style={{ background: '#4f46e5', color: '#fff', border: 'none', padding: '5px 15px', borderRadius: '5px', cursor: 'pointer', fontSize: '14px', marginRight: '10px' }}
                   >
                     Chat
                   </button>
                   {post.type?.toLowerCase() === "lost" && (
-                    <button 
+                    <button
                       onClick={() => claimItem(post.id)}
-                      style={{background: '#10b981', color: '#fff', border: 'none', padding: '5px 15px', borderRadius: '5px', cursor: 'pointer', fontSize: '14px', marginRight: '10px'}}
+                      style={{ background: '#10b981', color: '#fff', border: 'none', padding: '5px 15px', borderRadius: '5px', cursor: 'pointer', fontSize: '14px', marginRight: '10px' }}
                     >
                       Claim Item
                     </button>
                   )}
                 </>
               )}
-              <button 
+              <button
                 className="delete-btn"
-                onClick={()=>deletePost(post.id)}
+                onClick={() => deletePost(post.id)}
               >
                 Delete
               </button>

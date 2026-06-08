@@ -21,7 +21,7 @@ const StudentDashboard = () => {
 
   useEffect(() => {
 
-    fetch("https://campus-track-lost-and-found-3.onrender.com/api/auth/me", { credentials: "include" })
+    fetch("https://campus-track-lost-and-found-5.onrender.com/api/auth/me", { credentials: "include" })
       .then(res => {
         if (!res.ok) {
           navigate("/login");
@@ -45,22 +45,22 @@ const StudentDashboard = () => {
       .catch(err => console.error(err));
 
     // 🔥 FETCH MATCHES
-   
-fetch("https://campus-track-lost-and-found-3.onrender.com/api/items/matches", {
-    method: "GET",
-    credentials: "include"
-  })
-    .then(res => {
-      if (!res.ok) throw new Error("Failed to fetch matches");
-      return res.json();
-    })
-    .then(data => {
-      console.log("MATCHES:", data);
-      setMatches(data);
-    })
-    .catch(err => console.error(err));
 
-}, []); 
+    fetch("https://campus-track-lost-and-found-3.onrender.com/api/items/matches", {
+      method: "GET",
+      credentials: "include"
+    })
+      .then(res => {
+        if (!res.ok) throw new Error("Failed to fetch matches");
+        return res.json();
+      })
+      .then(data => {
+        console.log("MATCHES:", data);
+        setMatches(data);
+      })
+      .catch(err => console.error(err));
+
+  }, []);
 
   const sendChatRequest = async (matchedItem) => {
     try {
@@ -95,17 +95,17 @@ fetch("https://campus-track-lost-and-found-3.onrender.com/api/items/matches", {
     navigate("/login");
   };
   // ✅ COUNTS
- const myPosts = posts.length;
+  const myPosts = posts.length;
 
-const activePosts = posts.filter(
-  (p) => (p.itemStatus || "active").toLowerCase() === "active"
-).length;
+  const activePosts = posts.filter(
+    (p) => (p.itemStatus || "active").toLowerCase() === "active"
+  ).length;
 
-const matchedPosts = posts.filter(
-  (p) => p.itemStatus?.toLowerCase() === "matched"
-).length;
+  const matchedPosts = posts.filter(
+    (p) => p.itemStatus?.toLowerCase() === "matched"
+  ).length;
 
-const otherPosts = posts.length - (activePosts + matchedPosts);
+  const otherPosts = posts.length - (activePosts + matchedPosts);
   return (
 
     <div className="dashboard-container">
@@ -160,129 +160,129 @@ const otherPosts = posts.length - (activePosts + matchedPosts);
         </div>
 
         {/* ================= RECENT ACTIVITY ================= */}
-{/* ================= RECENT ACTIVITY ================= */}
-<h3 className="section-title">Recent Activity</h3>
+        {/* ================= RECENT ACTIVITY ================= */}
+        <h3 className="section-title">Recent Activity</h3>
 
-<div className="activity">
-  {!posts || posts.length === 0 ? (
-    <p>No recent activity</p>
-  ) : (
-    [...posts]
-      .sort((a, b) => b.id - a.id)
-      .slice(0, 3)
-      .map((post) => (
+        <div className="activity">
+          {!posts || posts.length === 0 ? (
+            <p>No recent activity</p>
+          ) : (
+            [...posts]
+              .sort((a, b) => b.id - a.id)
+              .slice(0, 3)
+              .map((post) => (
 
-        <div className="activity-card" key={post.id}>
+                <div className="activity-card" key={post.id}>
 
-          <div className="card-header">
+                  <div className="card-header">
 
-            <span className={`badge ${post.type?.toLowerCase() === "lost" ? "lost" : "found"}`}>
-              {post.type?.toUpperCase()}
-            </span>
+                    <span className={`badge ${post.type?.toLowerCase() === "lost" ? "lost" : "found"}`}>
+                      {post.type?.toUpperCase()}
+                    </span>
 
-            <span className={`status ${post.itemStatus?.toLowerCase()}`}>
-              {(post.itemStatus || "ACTIVE").toUpperCase()}
-            </span>
+                    <span className={`status ${post.itemStatus?.toLowerCase()}`}>
+                      {(post.itemStatus || "ACTIVE").toUpperCase()}
+                    </span>
 
-          </div>
-          {post.imagePath && (
-            <img
-              src={`https://campus-track-lost-and-found-3.onrender.com/uploads/${post.imagePath}`}
-              alt="item"
-              className="item-image"
-            />
+                  </div>
+                  {post.imagePath && (
+                    <img
+                      src={`https://campus-track-lost-and-found-3.onrender.com/uploads/${post.imagePath}`}
+                      alt="item"
+                      className="item-image"
+                    />
+                  )}
+
+                  <h4 className="item-title">{post.itemName}</h4>
+
+                  <p className="desc">{post.description}</p>
+
+                  <p className="location">
+                    <FaMapMarkerAlt className="icon" /> {post.location}
+                  </p>
+
+                  <p className="date">📅 {post.date}</p>
+
+                  <div className="tags">
+                    {(post.tags?.split(",") || []).map((tag, i) => (
+                      <span key={i} className="tag">
+                        {tag.trim()}
+                      </span>
+                    ))}
+                  </div>
+
+                  <div className="phone-row">
+                    <span className="phone-number">📞 {post.phone}</span>
+                    <a href={`tel:${post.phone}`} className="call-btn">Call</a>
+                  </div>
+
+                </div>
+
+              ))
           )}
-
-          <h4 className="item-title">{post.itemName}</h4>
-
-          <p className="desc">{post.description}</p>
-
-          <p className="location">
-            <FaMapMarkerAlt className="icon" /> {post.location}
-          </p>
-
-          <p className="date">📅 {post.date}</p>
-
-          <div className="tags">
-            {(post.tags?.split(",") || []).map((tag, i) => (
-              <span key={i} className="tag">
-                {tag.trim()}
-              </span>
-            ))}
-          </div>
-
-          <div className="phone-row">
-            <span className="phone-number">📞 {post.phone}</span>
-            <a href={`tel:${post.phone}`} className="call-btn">Call</a>
-          </div>
-
-        </div>
-
-      ))
-  )}
-</div>
-
-
-{/* ================= POTENTIAL MATCHES ================= */}
-<h3 className="section-title">Potential Matches</h3>
-
-<div className="activity">
-  {!matches || matches.length === 0 ? (
-    <p>No matches found</p>
-  ) : (
-    matches.map((item) => (
-      <div className="activity-card" key={item.id}>
-
-        <div className="card-header">
-          <span className={`badge ${item.type?.toLowerCase() === "lost" ? "lost" : "found"}`}>
-            {item.type ? item.type.toUpperCase() : "UNKNOWN"}
-          </span>
-
-          {/* ✅ dynamic status */}
-          <span className={`status ${item.itemStatus?.toLowerCase()}`}>
-            {item.itemStatus}
-          </span>
-        </div>
-        {item.imagePath && (
-          <img
-            src={`https://campus-track-lost-and-found-3.onrender.com/uploads/${item.imagePath}`}
-            alt="item"
-            className="item-image"
-          />
-        )}
-
-        <h4 className="item-title">{item.itemName}</h4>
-
-        <p className="desc">{item.description}</p>
-
-        <p className="location">
-          📍 {item.location}
-        </p>
-
-        <p className="date">📅 {item.date}</p>
-
-        <div className="tags">
-          {(item.tags?.split(",") || []).map((tag, i) => (
-            <span key={i} className="tag">
-              {tag.trim()}
-            </span>
-          ))}
-        </div>
-
-        <div className="phone-row">
-          <span>📞 {item.phone}</span>
-          <div style={{display: 'flex', gap: '8px'}}>
-            <a href={`tel:${item.phone}`} className="call-btn">Call</a>
-            <button className="chat-req-btn" onClick={() => sendChatRequest(item)} style={{background: '#4f46e5', color: '#fff', border: 'none', padding: '5px 10px', borderRadius: '5px', cursor: 'pointer', fontSize: '14px', transition: '0.3s'}}>Chat</button>
-          </div>
         </div>
 
 
+        {/* ================= POTENTIAL MATCHES ================= */}
+        <h3 className="section-title">Potential Matches</h3>
 
-      </div>
-    ))
-  )}
-</div>
+        <div className="activity">
+          {!matches || matches.length === 0 ? (
+            <p>No matches found</p>
+          ) : (
+            matches.map((item) => (
+              <div className="activity-card" key={item.id}>
+
+                <div className="card-header">
+                  <span className={`badge ${item.type?.toLowerCase() === "lost" ? "lost" : "found"}`}>
+                    {item.type ? item.type.toUpperCase() : "UNKNOWN"}
+                  </span>
+
+                  {/* ✅ dynamic status */}
+                  <span className={`status ${item.itemStatus?.toLowerCase()}`}>
+                    {item.itemStatus}
+                  </span>
+                </div>
+                {item.imagePath && (
+                  <img
+                    src={`https://campus-track-lost-and-found-3.onrender.com/uploads/${item.imagePath}`}
+                    alt="item"
+                    className="item-image"
+                  />
+                )}
+
+                <h4 className="item-title">{item.itemName}</h4>
+
+                <p className="desc">{item.description}</p>
+
+                <p className="location">
+                  📍 {item.location}
+                </p>
+
+                <p className="date">📅 {item.date}</p>
+
+                <div className="tags">
+                  {(item.tags?.split(",") || []).map((tag, i) => (
+                    <span key={i} className="tag">
+                      {tag.trim()}
+                    </span>
+                  ))}
+                </div>
+
+                <div className="phone-row">
+                  <span>📞 {item.phone}</span>
+                  <div style={{ display: 'flex', gap: '8px' }}>
+                    <a href={`tel:${item.phone}`} className="call-btn">Call</a>
+                    <button className="chat-req-btn" onClick={() => sendChatRequest(item)} style={{ background: '#4f46e5', color: '#fff', border: 'none', padding: '5px 10px', borderRadius: '5px', cursor: 'pointer', fontSize: '14px', transition: '0.3s' }}>Chat</button>
+                  </div>
+                </div>
+
+
+
+              </div>
+            ))
+          )}
+        </div>
 
       </div>
 

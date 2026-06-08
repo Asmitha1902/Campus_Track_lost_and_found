@@ -13,7 +13,7 @@ public class CorsConfig {
         CorsConfiguration config = new CorsConfiguration();
         // Allow credentials (cookies) if needed
         config.setAllowCredentials(true);
-        // Adjust origins as needed; * for all origins (not recommended for production)
+        // Allow any origin (use specific domains in production)
         config.addAllowedOriginPattern("*");
         // Allow all headers
         config.addAllowedHeader("*");

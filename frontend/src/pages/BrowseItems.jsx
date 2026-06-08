@@ -14,20 +14,20 @@ export default function BrowseItems() {
 
   // ✅ FETCH ONLY APPROVED ITEMS
   useEffect(() => {
-  fetch("https://campus-track-lost-and-found-3.onrender.com/api/items/approved", {
-    method: "GET",
-    credentials: "include"   // 🔥 IMPORTANT
-  })
-    .then(async (res) => {
-      if (!res.ok) {
-        const text = await res.text();
-        throw new Error("Error: " + res.status + " " + text);
-      }
-      return res.json();
+    fetch("https://campus-track-lost-and-found-5.onrender.com/api/items/approved", {
+      method: "GET",
+      credentials: "include"   // 🔥 IMPORTANT
     })
-    .then(data => setItems(data))
-    .catch(err => console.error("FETCH ERROR:", err));
-}, []);
+      .then(async (res) => {
+        if (!res.ok) {
+          const text = await res.text();
+          throw new Error("Error: " + res.status + " " + text);
+        }
+        return res.json();
+      })
+      .then(data => setItems(data))
+      .catch(err => console.error("FETCH ERROR:", err));
+  }, []);
 
   // ✅ FILTER LOGIC (FIXED)
   const filtered = useMemo(() => {
@@ -80,7 +80,7 @@ export default function BrowseItems() {
             {/* SEARCH */}
             <div className="relative flex-1 min-w-[280px]">
 
-              <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400"/>
+              <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
 
               <input
                 className="w-full border rounded-lg pl-10 h-11"
@@ -93,7 +93,7 @@ export default function BrowseItems() {
 
             {/* TYPE */}
             <select className="border rounded-lg px-3 h-11"
-              onChange={(e)=>setType(e.target.value)}>
+              onChange={(e) => setType(e.target.value)}>
               <option>All Types</option>
               <option>Lost</option>
               <option>Found</option>
@@ -101,7 +101,7 @@ export default function BrowseItems() {
 
             {/* CATEGORY */}
             <select className="border rounded-lg px-3 h-11"
-              onChange={(e)=>setCategory(e.target.value)}>
+              onChange={(e) => setCategory(e.target.value)}>
               <option>All Categories</option>
               <option>Electronics</option>
               <option>Documents</option>
@@ -115,7 +115,7 @@ export default function BrowseItems() {
 
             {/* LOCATION */}
             <select className="border rounded-lg px-3 h-11"
-              onChange={(e)=>setLocation(e.target.value)}>
+              onChange={(e) => setLocation(e.target.value)}>
               <option>All Locations</option>
               <option>Main Library</option>
               <option>Science Building</option>
@@ -135,7 +135,7 @@ export default function BrowseItems() {
 
             {/* 🔥 STATUS (same UI, fixed logic) */}
             <select className="border rounded-lg px-3 h-11"
-              onChange={(e)=>setStatus(e.target.value)}>
+              onChange={(e) => setStatus(e.target.value)}>
               <option>All Status</option>
               <option>Active</option>
               <option>Matched</option>
@@ -154,7 +154,7 @@ export default function BrowseItems() {
           </p>
 
           <div className="flex items-center gap-2 text-sm text-gray-500">
-            <SlidersHorizontal size={16}/>
+            <SlidersHorizontal size={16} />
             Sorted by date
           </div>
 
@@ -195,25 +195,25 @@ export default function BrowseItems() {
               <p className="desc">{item.description}</p>
 
               <div className="location">
-                <MapPin size={14}/> {item.location}
+                <MapPin size={14} /> {item.location}
               </div>
 
               <div className="date">
                 📅 {item.date}
               </div>
 
-<div className="tags">
-  🏷️
-  {item.tags && item.tags.trim().length > 0
-    ? item.tags
-        .split(",")
-        .map(tag => tag.trim())
-        .filter(tag => tag.length > 0)
-        .map((tag, index) => (
-          <span key={index} className="tag">{tag}</span>
-        ))
-    : "No tags"}
-</div>
+              <div className="tags">
+                🏷️
+                {item.tags && item.tags.trim().length > 0
+                  ? item.tags
+                    .split(",")
+                    .map(tag => tag.trim())
+                    .filter(tag => tag.length > 0)
+                    .map((tag, index) => (
+                      <span key={index} className="tag">{tag}</span>
+                    ))
+                  : "No tags"}
+              </div>
 
               <div className="phone-row">
                 <span className="phone-number">
@@ -221,7 +221,7 @@ export default function BrowseItems() {
                 </span>
 
                 <a href={`tel:${item.phone}`} className="call-btn">
-                  Call 
+                  Call
                 </a>
 
               </div>

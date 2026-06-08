@@ -13,7 +13,7 @@ const SidebarLayout = () => {
 
   useEffect(() => {
     const checkAuth = () => {
-      fetch("https://campus-track-lost-and-found-3.onrender.com/api/auth/me", { credentials: "include" })
+      fetch("https://campus-track-lost-and-found-5.onrender.com/api/auth/me", { credentials: "include" })
         .then(res => {
           if (!res.ok) {
             navigate("/login");

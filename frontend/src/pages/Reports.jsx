@@ -12,7 +12,7 @@ const Reports = () => {
   const [trendData, setTrendData] = useState([]);
 
   useEffect(() => {
-    fetch("https://campus-track-lost-and-found-3.onrender.com/api/reports")
+    fetch("https://campus-track-lost-and-found-5.onrender.com/api/reports")
       .then(res => res.json())
       .then(data => {
 
@@ -21,32 +21,32 @@ const Reports = () => {
 
         // 🔹 CATEGORY → BAR
         const fixedCategories = [
-  "Electronics",
-  "Documents",
-  "Clothing",
-  "Accessories",
-  "Keys",
-  "Books",
-  "Bags",
-  "Others"
-];
+          "Electronics",
+          "Documents",
+          "Clothing",
+          "Accessories",
+          "Keys",
+          "Books",
+          "Bags",
+          "Others"
+        ];
 
-const cat = fixedCategories.map(catName => ({
-  name: catName,
-  count: data.categoryData?.[catName] || 0
-}));
+        const cat = fixedCategories.map(catName => ({
+          name: catName,
+          count: data.categoryData?.[catName] || 0
+        }));
 
-setCategoryData(cat);
+        setCategoryData(cat);
 
         // 🔹 MONTH TREND → LINE
         const months = [
-          "JANUARY","FEBRUARY","MARCH","APRIL",
-          "MAY","JUNE","JULY","AUGUST",
-          "SEPTEMBER","OCTOBER","NOVEMBER","DECEMBER"
+          "JANUARY", "FEBRUARY", "MARCH", "APRIL",
+          "MAY", "JUNE", "JULY", "AUGUST",
+          "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"
         ];
 
         const trend = months.map(m => ({
-          month: m.substring(0,3),
+          month: m.substring(0, 3),
           lost: data.monthlyLost?.[m] || 0,
           matched: data.monthlyMatched?.[m] || 0
         }));
@@ -77,11 +77,11 @@ setCategoryData(cat);
           <h3>{stats.matched || 0}</h3>
           <p>Matched</p>
         </div>
-<div className="card33 purple"> 
-  <h3>{stats.resolved || 0}</h3>
-   <p>Resolved</p>
-    </div>
-        
+        <div className="card33 purple">
+          <h3>{stats.resolved || 0}</h3>
+          <p>Resolved</p>
+        </div>
+
       </div>
 
       {/* 🔥 CHART SECTION (LIKE YOUR IMAGE) */}
@@ -91,87 +91,87 @@ setCategoryData(cat);
         <div className="chart11-box">
           <h4>Items by Category</h4>
           <BarChart
-  width={550}
-  height={320}
-  data={categoryData}
-  layout="vertical"
-  margin={{ top: 10, right: 30, left: 20, bottom: 10 }}
->
-  {/* 🔥 Gradient Color */}
-  <defs>
-    <linearGradient id="colorBar" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0%" stopColor="#f97316" />
-      <stop offset="100%" stopColor="#fb923c" />
-    </linearGradient>
-  </defs>
+            width={550}
+            height={320}
+            data={categoryData}
+            layout="vertical"
+            margin={{ top: 10, right: 30, left: 20, bottom: 10 }}
+          >
+            {/* 🔥 Gradient Color */}
+            <defs>
+              <linearGradient id="colorBar" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stopColor="#f97316" />
+                <stop offset="100%" stopColor="#fb923c" />
+              </linearGradient>
+            </defs>
 
-  <XAxis type="number" hide />
-  
-  <YAxis
-    type="category"
-    dataKey="name"
-    width={120}
-    tick={{ fontSize: 13, fill: "#444" }}
-  />
+            <XAxis type="number" hide />
 
-  <Tooltip
-    contentStyle={{
-      backgroundColor: "#fff",
-      borderRadius: "10px",
-      border: "none",
-      boxShadow: "0 4px 20px rgba(0,0,0,0.1)"
-    }}
-  />
+            <YAxis
+              type="category"
+              dataKey="name"
+              width={120}
+              tick={{ fontSize: 13, fill: "#444" }}
+            />
 
-  {/* 🔥 Smooth Animated Bars */}
-  <Bar
-    dataKey="count"
-    fill="url(#colorBar)"
-    radius={[0, 12, 12, 0]}
-    barSize={18}
-    animationDuration={800}
-  />
-</BarChart>
+            <Tooltip
+              contentStyle={{
+                backgroundColor: "#fff",
+                borderRadius: "10px",
+                border: "none",
+                boxShadow: "0 4px 20px rgba(0,0,0,0.1)"
+              }}
+            />
+
+            {/* 🔥 Smooth Animated Bars */}
+            <Bar
+              dataKey="count"
+              fill="url(#colorBar)"
+              radius={[0, 12, 12, 0]}
+              barSize={18}
+              animationDuration={800}
+            />
+          </BarChart>
         </div>
 
         {/* 🔹 LINE GRAPH */}
         <div className="chart11-box">
           <h4>Recovery Trend</h4>
           <LineChart width={550} height={320} data={trendData}>
-  <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
+            <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
 
-  <XAxis dataKey="month" />
-  <YAxis />
+            <XAxis dataKey="month" />
+            <YAxis />
 
-  <Tooltip
-    contentStyle={{
-      backgroundColor: "#fff",
-      borderRadius: "10px",
-      border: "none",
-      boxShadow: "0 4px 20px rgba(0,0,0,0.1)"
-    }}
-  />
+            <Tooltip
+              contentStyle={{
+                backgroundColor: "#fff",
+                borderRadius: "10px",
+                border: "none",
+                boxShadow: "0 4px 20px rgba(0,0,0,0.1)"
+              }}
+            />
 
-  <Legend />
+            <Legend />
 
-  <Line
-    type="monotone"
-    dataKey="lost"
-    stroke="#ef4444"
-    strokeWidth={3}
-    dot={{ r: 4 }}
-    activeDot={{ r: 6 }}
-  />
+            <Line
+              type="monotone"
+              dataKey="lost"
+              stroke="#ef4444"
+              strokeWidth={3}
+              dot={{ r: 4 }}
+              activeDot={{ r: 6 }}
+            />
 
-  <Line
-    type="monotone"
-    dataKey="matched"
-    stroke="#3b82f6"
-    strokeWidth={3}
-    dot={{ r: 4 }}
-    activeDot={{ r: 6 }}
-  />
-</LineChart>
+            <Line
+              type="monotone"
+              dataKey="matched"
+              stroke="#3b82f6"
+              strokeWidth={3}
+              dot={{ r: 4 }}
+              activeDot={{ r: 6 }}
+            />
+          </LineChart>
         </div>
 
       </div>
@@ -187,11 +187,11 @@ setCategoryData(cat);
           <h3>{stats.matched || 0}</h3>
           <p>Total Matches</p>
         </div>
-<div className="eng-card"> 
-  <h3>{stats.resolved || 0}</h3>
-   <p>Resolved Cases</p> 
-   </div>
-        
+        <div className="eng-card">
+          <h3>{stats.resolved || 0}</h3>
+          <p>Resolved Cases</p>
+        </div>
+
 
         <div className="eng-card">
           <h3>

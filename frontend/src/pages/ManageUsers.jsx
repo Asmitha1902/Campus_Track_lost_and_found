@@ -11,7 +11,7 @@ const ManageUsers = () => {
     try {
       setLoading(true);
 
-      const res = await fetch("https://campus-track-lost-and-found-3.onrender.com/api/admin/users", {
+      const res = await fetch("https://campus-track-lost-and-found-5.onrender.com/api/admin/users", {
         credentials: "include",
       });
 

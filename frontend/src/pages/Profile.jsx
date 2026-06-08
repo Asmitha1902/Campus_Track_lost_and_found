@@ -22,7 +22,7 @@ export default function Profile() {
 
   const loadUser = async () => {
     try {
-      const res = await fetch("https://campus-track-lost-and-found-3.onrender.com/api/users/me", {
+      const res = await fetch("https://campus-track-lost-and-found-5.onrender.com/api/users/me", {
         credentials: "include",
       });
       const data = await res.json();
@@ -86,9 +86,9 @@ export default function Profile() {
 
       <div className="profile-content">
         <div className="profile-main-card">
-          
+
           <div className="profile-header-premium">
-            <div 
+            <div
               className={`profile-avatar-premium ${isHovered ? 'hover-effect' : ''}`}
               onMouseEnter={() => setIsHovered(true)}
               onMouseLeave={() => setIsHovered(false)}
@@ -96,7 +96,7 @@ export default function Profile() {
               {user.fullName?.charAt(0).toUpperCase() || "U"}
               <div className="avatar-ring"></div>
             </div>
-            
+
             <div className="profile-titles">
               <h2>{user.fullName}</h2>
               <div className="profile-badges">
@@ -113,7 +113,7 @@ export default function Profile() {
                 <h3>Personal Information</h3>
                 <p>Update your details and how we can reach you</p>
               </div>
-              
+
               <div className="premium-form-grid">
                 <div className="input-group-premium">
                   <label>Full Name</label>
@@ -143,7 +143,7 @@ export default function Profile() {
                   <span className="lock-icon">🔒</span>
                 </div>
               </div>
-              
+
               <button className="primary-action-btn" onClick={handleSubmit}>
                 Save Changes
               </button>

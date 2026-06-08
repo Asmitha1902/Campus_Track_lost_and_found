@@ -49,64 +49,64 @@ const LostFound = () => {
     setPreview(null);
   };
 
- const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  const formData = new FormData();
+    const formData = new FormData();
 
-  formData.append("type", type);
-  formData.append("itemName", form.itemName);
-  formData.append("description", form.description);
-  formData.append("category", form.category);
-  formData.append("location", form.location);
-  formData.append("date", form.date);
-  formData.append("tags", form.tags);
-  formData.append("phone", form.phone);
+    formData.append("type", type);
+    formData.append("itemName", form.itemName);
+    formData.append("description", form.description);
+    formData.append("category", form.category);
+    formData.append("location", form.location);
+    formData.append("date", form.date);
+    formData.append("tags", form.tags);
+    formData.append("phone", form.phone);
 
 
-  if (image) formData.append("image", image);
-  
- try {
+    if (image) formData.append("image", image);
+
+    try {
       // ✅ Send request without userId, backend attaches logged-in user automatically
-    const res = await fetch("https://campus-track-lost-and-found-3.onrender.com/api/items/report", {
-  method: "POST",
-  body: formData,
-  credentials: "include"
-});
+      const res = await fetch("https://campus-track-lost-and-found-5.onrender.com/api/items/report", {
+        method: "POST",
+        body: formData,
+        credentials: "include"
+      });
 
-console.log("Response status:", res.status);
+      console.log("Response status:", res.status);
 
-if (!res.ok) {
-  const msg = await res.text();
-  console.log("Error response:", msg);
-  throw new Error(msg || "Server error");
-}
+      if (!res.ok) {
+        const msg = await res.text();
+        console.log("Error response:", msg);
+        throw new Error(msg || "Server error");
+      }
 
-    // 🔥 Dynamic message based on type
-    if (type === "lost") {
-      alert("Lost item submitted successfully!");
-    } else if (type === "found") {
-      alert("Found item submitted successfully!");
+      // 🔥 Dynamic message based on type
+      if (type === "lost") {
+        alert("Lost item submitted successfully!");
+      } else if (type === "found") {
+        alert("Found item submitted successfully!");
+      }
+
+      // Reset form
+      setForm({
+        itemName: "",
+        description: "",
+        category: "",
+        location: "",
+        date: "",
+        tags: "",
+        phone: ""
+      });
+      removePhoto();
+      setType("lost");
+
+    } catch (err) {
+      console.error(err);
+      alert("Error submitting item. Make sure all fields are filled correctly.");
     }
-
-    // Reset form
-    setForm({
-      itemName: "",
-      description: "",
-      category: "",
-      location: "",
-      date: "",
-      tags: "",
-      phone: ""
-    });
-    removePhoto();
-    setType("lost");
-
-  } catch (err) {
-    console.error(err);
-    alert("Error submitting item. Make sure all fields are filled correctly.");
-  }
-};
+  };
 
   return (
 
@@ -221,17 +221,17 @@ if (!res.ok) {
               />
             </div>
 
-<div>
-  <label>Tags</label>
-  <input
-    type="text"
-    name="tags"
-    value={form.tags} // controlled input
-    placeholder="e.g., blue, leather, nike"
-    onChange={(e) => setForm({ ...form, tags: e.target.value })}
-  />
-  
-</div>
+            <div>
+              <label>Tags</label>
+              <input
+                type="text"
+                name="tags"
+                value={form.tags} // controlled input
+                placeholder="e.g., blue, leather, nike"
+                onChange={(e) => setForm({ ...form, tags: e.target.value })}
+              />
+
+            </div>
 
           </div>
 

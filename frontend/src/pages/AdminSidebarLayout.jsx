@@ -11,7 +11,7 @@ const AdminSidebarLayout = () => {
   const basePath = "/admin-dashboard"; // base path for admin routes
 
   React.useEffect(() => {
-    fetch("https://campus-track-lost-and-found-3.onrender.com/api/admin/me", { credentials: "include" })
+    fetch("https://campus-track-lost-and-found-5.onrender.com/api/admin/me", { credentials: "include" })
       .then(res => {
         if (!res.ok) {
           navigate("/admin-login");

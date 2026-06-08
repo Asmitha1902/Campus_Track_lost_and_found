@@ -13,7 +13,7 @@ const Chat = () => {
 
   useEffect(() => {
     let reqInterval;
-    fetch("https://campus-track-lost-and-found-3.onrender.com/api/auth/me", { credentials: "include" })
+    fetch("https://campus-track-lost-and-found-5.onrender.com/api/auth/me", { credentials: "include" })
       .then(res => {
         if (!res.ok) {
           navigate("/login");
@@ -43,7 +43,7 @@ const Chat = () => {
       if (res.ok) {
         const data = await res.json();
         setRequests(data);
-        
+
         // Update activeRequest if its status changed
         setActiveRequest(prev => {
           if (!prev) return prev;
@@ -100,7 +100,7 @@ const Chat = () => {
       if (res.ok) {
         fetchRequests(user.id);
         if (activeRequest && activeRequest.id === reqId) {
-          setActiveRequest(prev => ({...prev, status}));
+          setActiveRequest(prev => ({ ...prev, status }));
         }
       }
     } catch (e) {
@@ -142,10 +142,10 @@ const Chat = () => {
           {requests.map(req => {
             const isMeSender = req.senderId == user?.id;
             const otherName = isMeSender ? req.receiverName : req.senderName;
-            
+
             return (
-              <div 
-                key={req.id} 
+              <div
+                key={req.id}
                 className={`chat-item ${activeRequest?.id == req.id ? 'active' : ''}`}
                 onClick={() => setActiveRequest(req)}
               >
@@ -158,7 +158,7 @@ const Chat = () => {
             );
           })}
           {requests.length === 0 && (
-            <div style={{padding: '20px', textAlign: 'center', color: '#64748b'}}>No requests found.</div>
+            <div style={{ padding: '20px', textAlign: 'center', color: '#64748b' }}>No requests found.</div>
           )}
         </div>
       </div>
@@ -168,12 +168,12 @@ const Chat = () => {
           <>
             <div className="chat-header">
               <h3>
-                {activeRequest.senderId == user?.id 
-                  ? activeRequest.receiverName 
-                  : activeRequest.senderName} 
-                <span style={{fontSize:'12px', color:'#64748b', marginLeft:'10px'}}>Item: {activeRequest.itemName}</span>
+                {activeRequest.senderId == user?.id
+                  ? activeRequest.receiverName
+                  : activeRequest.senderName}
+                <span style={{ fontSize: '12px', color: '#64748b', marginLeft: '10px' }}>Item: {activeRequest.itemName}</span>
               </h3>
-              
+
               {activeRequest.receiverId == user?.id && activeRequest.status === "PENDING" && (
                 <div className="chat-actions">
                   <button className="btn-accept" onClick={() => handleStatusChange(activeRequest.id, "ACCEPTED")}>Accept</button>
@@ -188,7 +188,7 @@ const Chat = () => {
                   {messages.map(msg => (
                     <div key={msg.id} className={`message ${msg.senderId == user?.id ? 'sent' : 'received'}`}>
                       {msg.content}
-                      <span className="message-time">{new Date(msg.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                      <span className="message-time">{new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                     </div>
                   ))}
                   <div ref={messagesEndRef} />
@@ -196,8 +196,8 @@ const Chat = () => {
                 </>
               ) : (
                 <div className="empty-chat">
-                   {activeRequest.status === "PENDING" 
-                    ? (activeRequest.senderId == user?.id ? "Waiting for the other user to accept..." : "You need to accept the request to start chatting.") 
+                  {activeRequest.status === "PENDING"
+                    ? (activeRequest.senderId == user?.id ? "Waiting for the other user to accept..." : "You need to accept the request to start chatting.")
                     : "This request was rejected."}
                 </div>
               )}
@@ -205,9 +205,9 @@ const Chat = () => {
 
             {activeRequest.status === "ACCEPTED" && (
               <form className="chat-input" onSubmit={sendMessage}>
-                <input 
-                  type="text" 
-                  placeholder="Type a message..." 
+                <input
+                  type="text"
+                  placeholder="Type a message..."
                   value={msgInput}
                   onChange={(e) => setMsgInput(e.target.value)}
                 />

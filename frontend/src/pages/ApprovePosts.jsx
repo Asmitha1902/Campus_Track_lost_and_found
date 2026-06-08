@@ -12,79 +12,79 @@ const ApprovePosts = () => {
 
   // ✅ Fetch pending items
   // ✅ Fetch pending items (already correct)
-const fetchPosts = async () => {
-  try {
-    setLoading(true);
-    setError(null);
+  const fetchPosts = async () => {
+    try {
+      setLoading(true);
+      setError(null);
 
-    const response = await fetch("https://campus-track-lost-and-found-3.onrender.com/api/items/pending", {
-      credentials: "include" // ✅ OK
-    });
+      const response = await fetch("https://campus-track-lost-and-found-5.onrender.com/api/items/pending", {
+        credentials: "include" // ✅ OK
+      });
 
-    if (!response.ok) throw new Error("Failed to fetch");
+      if (!response.ok) throw new Error("Failed to fetch");
 
-    const data = await response.json();
-    setPosts(data);
+      const data = await response.json();
+      setPosts(data);
 
-  } catch (err) {
-    console.error("Error fetching posts:", err);
-    setError("Failed to load posts");
-    setPosts([]);
-  } finally {
-    setLoading(false);
-  }
-};
+    } catch (err) {
+      console.error("Error fetching posts:", err);
+      setError("Failed to load posts");
+      setPosts([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-// ✅ Approve item (FIX HERE)
-const handleApprove = async (id) => {
-  try {
-    const res = await fetch(`https://campus-track-lost-and-found-3.onrender.com/api/items/approve/${id}`, {
-      method: "PUT",
-      credentials: "include" // 🔥 ADD THIS
-    });
+  // ✅ Approve item (FIX HERE)
+  const handleApprove = async (id) => {
+    try {
+      const res = await fetch(`https://campus-track-lost-and-found-3.onrender.com/api/items/approve/${id}`, {
+        method: "PUT",
+        credentials: "include" // 🔥 ADD THIS
+      });
 
-    if (!res.ok) throw new Error("Failed to approve");
-    fetchPosts();
+      if (!res.ok) throw new Error("Failed to approve");
+      fetchPosts();
 
-  } catch (err) {
-    console.error(err);
-    alert("Error approving item");
-  }
-};
+    } catch (err) {
+      console.error(err);
+      alert("Error approving item");
+    }
+  };
 
-// ✅ Reject item (FIX HERE)
-const handleReject = async (id) => {
-  try {
-    const res = await fetch(`https://campus-track-lost-and-found-3.onrender.com/api/items/reject/${id}`, {
-      method: "PUT",
-      credentials: "include" // 🔥 ADD THIS
-    });
+  // ✅ Reject item (FIX HERE)
+  const handleReject = async (id) => {
+    try {
+      const res = await fetch(`https://campus-track-lost-and-found-3.onrender.com/api/items/reject/${id}`, {
+        method: "PUT",
+        credentials: "include" // 🔥 ADD THIS
+      });
 
-    if (!res.ok) throw new Error("Failed to reject");
-    fetchPosts();
+      if (!res.ok) throw new Error("Failed to reject");
+      fetchPosts();
 
-  } catch (err) {
-    console.error(err);
-    alert("Error rejecting item");
-  }
-};
+    } catch (err) {
+      console.error(err);
+      alert("Error rejecting item");
+    }
+  };
 
-// ✅ Remove item (FIX HERE)
-const handleRemove = async (id) => {
-  try {
-    const res = await fetch(`https://campus-track-lost-and-found-3.onrender.com/api/items/${id}`, {
-      method: "DELETE",
-      credentials: "include" // 🔥 ADD THIS
-    });
+  // ✅ Remove item (FIX HERE)
+  const handleRemove = async (id) => {
+    try {
+      const res = await fetch(`https://campus-track-lost-and-found-3.onrender.com/api/items/${id}`, {
+        method: "DELETE",
+        credentials: "include" // 🔥 ADD THIS
+      });
 
-    if (!res.ok) throw new Error("Failed to delete");
-    fetchPosts();
+      if (!res.ok) throw new Error("Failed to delete");
+      fetchPosts();
 
-  } catch (err) {
-    console.error(err);
-    alert("Error deleting item");
-  }
-};
+    } catch (err) {
+      console.error(err);
+      alert("Error deleting item");
+    }
+  };
 
   return (
     <div className="approve-container">
