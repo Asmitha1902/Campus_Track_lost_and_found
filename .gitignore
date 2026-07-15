@@ -1,0 +1,17 @@
+backend/target/
+**/target/
+*.jar
+*.class
+
+frontend/node_modules/
+frontend/dist/
+
+.env
+*.env
+application-local.properties
+application-prod.properties
+
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
