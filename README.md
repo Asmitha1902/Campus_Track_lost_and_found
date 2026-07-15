@@ -104,7 +104,7 @@ mvn spring-boot:run
 ```
 
 👉 Runs on:
-http://localhost:9090
+http://localhost:8080
 
 ---
 
